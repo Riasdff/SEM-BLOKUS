@@ -162,7 +162,10 @@ def main():
         board.create_text(sqsize * 30 / 36, sqsize * 12 / 36, text="It's " + color[0] + "s turn", font=("Showcard Gothic", fontsize))
 
     gameboard = [[0 for col in range(20)] for row in range(20)]
-    print(gameboard)
+
+    def draw_array():
+        for row in range(len(gameboard)):
+            print(gameboard[row])
 
     def config(event=None):
         board.delete("all")
@@ -199,7 +202,7 @@ def main():
 
         gameboard[row][col] = 1
 
-        print(gameboard)
+        draw_array()
         print(col, row)
         return col + 8 * row
 
