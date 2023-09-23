@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import *
-import random
+# import random
 
 pieces = [[(0, 0)],
           [(0, 0), (1, 0)],
@@ -107,6 +107,8 @@ def main():
     def draw():
         sqsize = min(int(game.winfo_width()), int(game.winfo_height()))
         fontsize = sqsize // 50
+        review_board = [[0 for row in range(8)] for column in range(8)]
+        gameboard = [[0 for col in range(20)] for row in range(20)]
 
         def draw_piece(x, y, piece_size, piece):
             for cell in piece:
@@ -130,35 +132,38 @@ def main():
             for column in range(20):
                 board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30, row * sqsize / 30 + sqsize / 30, fill="white", tags="board")
 
-        board.create_rectangle(sqsize * 13 / 18, sqsize * 1 / 18, sqsize * 17 / 18, sqsize * 5 / 18, fill="gray50")
+        def draw_array():
+            global gameboard
+            for row in gameboard:
+                print(row, end=" ")
+                print()
+
+        def draw_array_rb():
+            for row in review_board:
+                print(row, end=" ")
+                print()
+
+        for row in range(8):
+            for column in range(8):
+                board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
+                                       sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30, fill="gray50")
+
         board.create_rectangle(0, sqsize * 2 / 3, sqsize, sqsize)
 
-        board.create_rectangle(sqsize * 13 / 18, sqsize * 7 / 18, sqsize * 17 / 18, sqsize * 8 / 18, fill="gray75", activefill="lightgreen", tags="skip")
-        board.create_rectangle(sqsize * 13 / 18, sqsize * 8 / 18, sqsize * 17 / 18, sqsize * 9 / 18, fill="gray75", activefill="lightgreen", tags="rules")
-        board.create_rectangle(sqsize * 13 / 18, sqsize * 9 / 18, sqsize * 17 / 18, sqsize * 10 / 18, fill="gray75", activefill="lightgreen", tags="take_back")
-        board.create_rectangle(sqsize * 13 / 18, sqsize * 10 / 18, sqsize * 17 / 18, sqsize * 11 / 18, fill="gray50", activefill="red", tags="quit")
-        board.create_rectangle(sqsize * 25 / 36, sqsize * 11 / 36, sqsize * 35 / 36, sqsize * 13 / 36, fill=color[0])
+        board.create_rectangle(sqsize * 21 / 30, sqsize * 12 / 36, sqsize * 29 / 30, sqsize * 14 / 36, fill=color[0])
+        board.create_rectangle(sqsize * 26 / 36, sqsize * 15 / 36, sqsize * 34 / 36, sqsize * 17 / 36, fill="gray75", activefill="lightgreen", tags="skip")
+        board.create_rectangle(sqsize * 26 / 36, sqsize * 17 / 36, sqsize * 34 / 36, sqsize * 19 / 36, fill="gray75", activefill="lightgreen", tags="rules")
+        board.create_rectangle(sqsize * 26 / 36, sqsize * 19 / 36, sqsize * 34 / 36, sqsize * 21 / 36, fill="gray75", activefill="lightgreen", tags="take_back")
+        board.create_rectangle(sqsize * 26 / 36, sqsize * 21 / 36, sqsize * 34 / 36, sqsize * 23 / 36, fill="gray50", activefill="red", tags="quit")
 
-        board.create_text(sqsize * 30 / 36, sqsize * 15 / 36, text="SKIP TURN", font=("Showcard Gothic", fontsize), tags="skip", activefill="white")
-        board.create_text(sqsize * 30 / 36, sqsize * 17 / 36, text="RULES", font=("Showcard Gothic", fontsize), tags="rules", activefill="white")
-        board.create_text(sqsize * 30 / 36, sqsize * 19 / 36, text="TAKE BACK", font=("Showcard Gothic", fontsize), tags="take_back", activefill="white")
-        board.create_text(sqsize * 30 / 36, sqsize * 21 / 36, text="QUIT GAME", font=("Showcard Gothic", fontsize), tags="quit", activefill="white")
-
-    gameboard = [[0 for col in range(20)] for row in range(20)]
-
-    def draw_array():
-        for row in range(len(gameboard)):
-            print(gameboard[row])
+        board.create_text(sqsize * 30 / 36, sqsize * 16 / 36, text="SKIP TURN", font=("Showcard Gothic", fontsize), tags="skip", activefill="white")
+        board.create_text(sqsize * 30 / 36, sqsize * 18 / 36, text="RULES", font=("Showcard Gothic", fontsize), tags="rules", activefill="white")
+        board.create_text(sqsize * 30 / 36, sqsize * 20 / 36, text="TAKE BACK", font=("Showcard Gothic", fontsize), tags="take_back", activefill="white")
+        board.create_text(sqsize * 30 / 36, sqsize * 22 / 36, text="QUIT GAME", font=("Showcard Gothic", fontsize), tags="quit", activefill="white")
 
     def config(event=None):
         board.delete("all")
         draw()
-
-    def on_hover(event):
-        board.itemconfig('board', activefill="gray80")
-
-    def on_leave(event):
-        board.itemconfig('piece', activeoutline="white")
 
     def click_piece(event):
         # widget = event.widget
@@ -174,6 +179,7 @@ def main():
         pass
 
     def on_place(event):
+        global gameboard
         canvas = event.widget
         item_id = canvas.find_closest(event.x, event.y)
         current_color = canvas.itemcget(item_id, "fill")
@@ -183,9 +189,6 @@ def main():
         col = int(event.x / 30)
         row = int(event.y / 30)
 
-        gameboard[row][col] = 1
-
-        draw_array()
         print(col, row)
         return col + 8 * row
 
@@ -326,8 +329,6 @@ def main():
     board.tag_bind("take_back", "<Button-1>", take_back)
     board.tag_bind("quit", "<Button-1>", quit)
     # board.bind("<Button-1>", update_score)
-    board.tag_bind("board", "<Enter>", on_hover)
-    board.tag_bind("piece", "<Leave>", on_leave)
     # Every change in the window calls config function
     game.bind("<Configure>", config)
     game.mainloop()
