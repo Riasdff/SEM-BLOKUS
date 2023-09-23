@@ -130,36 +130,19 @@ def main():
             for column in range(20):
                 board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30, row * sqsize / 30 + sqsize / 30, fill="white", tags="board")
 
-        board.create_rectangle(sqsize * 13 / 18, sqsize * 1 / 18, sqsize * 17 / 18, sqsize * 5 / 18, fill="white")
-        board.create_rectangle(0, 0, sqsize, sqsize, outline="black")
+        board.create_rectangle(sqsize * 13 / 18, sqsize * 1 / 18, sqsize * 17 / 18, sqsize * 5 / 18, fill="gray50")
         board.create_rectangle(0, sqsize * 2 / 3, sqsize, sqsize)
-        board.create_oval(sqsize * 13 / 18, sqsize * 1 / 18, sqsize * 14 / 18, sqsize * 2 / 18, fill="blue")
-        board.create_text(sqsize * 13.5 / 18, sqsize * 1.5 / 18, text="P1", font=("Showcard Gothic", fontsize))
-        board.create_oval(sqsize * 13 / 18, sqsize * 2 / 18, sqsize * 14 / 18, sqsize * 3 / 18, fill="yellow")
-        board.create_text(sqsize * 13.5 / 18, sqsize * 2.5 / 18, text="P2", font=("Showcard Gothic", fontsize))
-        board.create_oval(sqsize * 13 / 18, sqsize * 3 / 18, sqsize * 14 / 18, sqsize * 4 / 18, fill="red")
-        board.create_text(sqsize * 13.5 / 18, sqsize * 3.5 / 18, text="P1", font=("Showcard Gothic", fontsize))
-        board.create_oval(sqsize * 13 / 18, sqsize * 4 / 18, sqsize * 14 / 18, sqsize * 5 / 18, fill="green")
-        board.create_text(sqsize * 13.5 / 18, sqsize * 4.5 / 18, text="P2", font=("Showcard Gothic", fontsize))
-        board.create_line(sqsize * 13 / 18, sqsize * 2 / 18, sqsize * 17 / 18, sqsize * 2 / 18)
-        board.create_line(sqsize * 13 / 18, sqsize * 3 / 18, sqsize * 17 / 18, sqsize * 3 / 18)
-        board.create_line(sqsize * 13 / 18, sqsize * 4 / 18, sqsize * 17 / 18, sqsize * 4 / 18)
 
         board.create_rectangle(sqsize * 13 / 18, sqsize * 7 / 18, sqsize * 17 / 18, sqsize * 8 / 18, fill="gray75", activefill="lightgreen", tags="skip")
         board.create_rectangle(sqsize * 13 / 18, sqsize * 8 / 18, sqsize * 17 / 18, sqsize * 9 / 18, fill="gray75", activefill="lightgreen", tags="rules")
         board.create_rectangle(sqsize * 13 / 18, sqsize * 9 / 18, sqsize * 17 / 18, sqsize * 10 / 18, fill="gray75", activefill="lightgreen", tags="take_back")
         board.create_rectangle(sqsize * 13 / 18, sqsize * 10 / 18, sqsize * 17 / 18, sqsize * 11 / 18, fill="gray50", activefill="red", tags="quit")
-        board.create_rectangle(sqsize * 25 / 36, sqsize * 11 / 36, sqsize * 35 / 36, sqsize * 13 / 36, fill="lightgreen")
+        board.create_rectangle(sqsize * 25 / 36, sqsize * 11 / 36, sqsize * 35 / 36, sqsize * 13 / 36, fill=color[0])
 
-        board.create_text(sqsize * 31 / 36, sqsize * 3 / 36, text="Score: " + str(score_b), font=("Showcard Gothic", fontsize))
-        board.create_text(sqsize * 31 / 36, sqsize * 5 / 36, text="Score: " + str(score_y), font=("Showcard Gothic", fontsize))
-        board.create_text(sqsize * 31 / 36, sqsize * 7 / 36, text="Score: " + str(score_r), font=("Showcard Gothic", fontsize))
-        board.create_text(sqsize * 31 / 36, sqsize * 9 / 36, text="Score: " + str(score_g), font=("Showcard Gothic", fontsize))
         board.create_text(sqsize * 30 / 36, sqsize * 15 / 36, text="SKIP TURN", font=("Showcard Gothic", fontsize), tags="skip", activefill="white")
         board.create_text(sqsize * 30 / 36, sqsize * 17 / 36, text="RULES", font=("Showcard Gothic", fontsize), tags="rules", activefill="white")
         board.create_text(sqsize * 30 / 36, sqsize * 19 / 36, text="TAKE BACK", font=("Showcard Gothic", fontsize), tags="take_back", activefill="white")
         board.create_text(sqsize * 30 / 36, sqsize * 21 / 36, text="QUIT GAME", font=("Showcard Gothic", fontsize), tags="quit", activefill="white")
-        board.create_text(sqsize * 30 / 36, sqsize * 12 / 36, text="It's " + color[0] + "s turn", font=("Showcard Gothic", fontsize))
 
     gameboard = [[0 for col in range(20)] for row in range(20)]
 
@@ -206,16 +189,13 @@ def main():
         print(col, row)
         return col + 8 * row
 
-    def update_score(event):
-        global score_b
-        score_b += 1
-        draw()
+    # def update_score(event):
+    #    global score_b
+    #    score_b += 1
+    #    draw()
 
     def skip_turn(event):
          pass
-
-    def PosIndex(event):
-        pass
 
     def rules_menu(event):
         global rules
@@ -345,7 +325,7 @@ def main():
     board.tag_bind("rules", "<Button-1>", rules_menu)
     board.tag_bind("take_back", "<Button-1>", take_back)
     board.tag_bind("quit", "<Button-1>", quit)
-    board.bind("<Button-1>", update_score)
+    # board.bind("<Button-1>", update_score)
     board.tag_bind("board", "<Enter>", on_hover)
     board.tag_bind("piece", "<Leave>", on_leave)
     # Every change in the window calls config function
