@@ -8,19 +8,20 @@ pieces = [[(0, 0)],
           [(0, 0), [0, -1], [1, 0]],
           [(0, 0), [-1, 0], [1, 0], [2, 0]],
           [(0, 0), [0, -1], [0, 1], [1, 1]],
-          [(0, 0), [-1, 0], [0, -1], [-1, -1]],
+          [(0, 0), [1, 0], [1, -1], [0, -1]],
           [(0, 0), [0, -1], [1, 1], [1, 0]],
+          [(0, 0), [0, 1], [1, 0], [-1, 0]],
           [(0, 0), [-1, 0], [0, -1], [1, -1], [0, 1]],
           [(0, 0), [-1, 0], [-2, 0], [1, 0], [2, 0]],
           [(0, 0), [0, 1], [0, -1], [0, -2], [1, 1]],
           [(0, 0), [0, -1], [0, 1], [1, -1], [1, -2]],
           [(0, 0), [0, 1], [0, -1], [1, -1], [1, 0]],
-          [(0, 0), [0, 1], [0, 2], [-1, 0], [1, 0]],
+          [(0, 0), [0, 1], [0, -1], [-1, -1], [1, -1]],
           [(0, 0), [-1, 0], [-1, -1], [1, 0], [1, -1]],
           [(0, 0), [-1, 0], [-2, 0], [0, -1], [0, -2]],
           [(0, 0), [0, 1], [-1, 1], [1, -1], [1, 0]],
           [(0, 0), [-1, 0], [0, -1], [1, 0], [0, 1]],
-          [(0, 0), [-1, 0], [0, -1], [0, 1], [0, 2]],
+          [(0, 0), [-1, -1], [0, -1], [0, 1], [0, -2]],
           [(0, 0), [0, -1], [-1, -1], [1, 1], [0, 1]]
           ]
 
@@ -30,14 +31,15 @@ pieces_dictionary = {"one": [(0, 0)],
                      "three_l": [(0, 0), (0, -1), (1, 0)],
                      "four_i": [(0, 0), (-1, 0), (1, 0), (2, 0)],
                      "four_l": [(0, 0), (0, -1), (0, 1), (1, 1)],
-                     "four_s": [(0, 0), (-1, 0), (0, -1), (-1, -1)],
-                     "four_o": [(0, 0), (0, -1), (1, 1), (1, -1)],
+                     "four_o": [(0, 0), (-1, 0), (0, -1), (-1, -1)],
+                     "four_s": [(0, 0), (0, -1), (1, 1), (1, -1)],
+                     "four_t": [(0, 0), (0, 1), (1, 0), (-1, 0)],
                      "f_f": [(0, 0), (-1, 0), (0, -1), (1, -1), (0, 1)],
                      "f_i": [(0, 0), (-1, 0), (-2, 0), (1, 0), (2, 0)],
                      "f_l": [(0, 0), (0, 1), (0, -1), (0, -2), (1, 1)],
                      "f_n": [(0, 0), (0, 1), (0, 2), (1, 0), (1, -1)],
                      "f_p": [(0, 0), (0, 1), (0, -1), (1, -1), (1, 0)],
-                     "f_t": [(0, 0), (0, 1), (0, 2), (-1, 0), (1, 0)],
+                     "f_t": [(0, 0), (0, 1), (0, -1), (-1, -1), (1, -1)],
                      "f_u": [(0, 0), (-1, 0), (-1, -1), (1, 0), (1, -1)],
                      "f_v": [(0, 0), (-1, 0), (-2, 0), (0, -1), (0, -2)],
                      "f_w": [(0, 0), (0, 1), (-1, 1), (1, -1), (1, 0)],
@@ -50,10 +52,12 @@ for x in pieces_dictionary:
     print(pieces_dictionary.get(x))
 
 color = ["blue", "yellow", "red", "green"]
+
 score_b = 0
 score_y = 0
 score_r = 0
 score_g = 0
+
 selected_piece = None
 
 root = tk.Tk()
@@ -109,6 +113,20 @@ def main():
         fontsize = sqsize // 50
         review_board = [[0 for row in range(8)] for column in range(8)]
         gameboard = [[0 for col in range(20)] for row in range(20)]
+        piece_size = sqsize / 45
+        x_offset, y_offset = sqsize * 2 / 45, sqsize * 32 / 45
+
+        # draws the grid for the shapes
+        for row in range(15):
+            for column in range(35):
+                board.create_rectangle(column * piece_size, row * piece_size + sqsize * 2 / 3,
+                                       column * piece_size + piece_size, row * piece_size + piece_size + sqsize * 2 / 3, fill="lightgreen")
+
+        # draws the red lines
+        for row in range(3):
+            board.create_line(0, row * piece_size * 5 + sqsize * 2 / 3, sqsize * 7 / 9, row * piece_size * 5 + sqsize * 2 / 3, fill="red", width=3)
+            for column in range(7):
+                board.create_line(column * piece_size * 5, sqsize * 2 / 3, column * piece_size * 5, sqsize, fill="red", width=3)
 
         def draw_piece(x, y, piece_size, piece):
             for cell in piece:
@@ -119,15 +137,12 @@ def main():
                     fill=color[0], outline='black', tags="piece"
                 )
 
-        piece_size = sqsize / 45
-        x_offset, y_offset = sqsize * 2 / 30, sqsize * 21 / 30
         for piece_index, piece in enumerate(pieces):
-            x = x_offset + (piece_index % 7) * piece_size * 6
+            x = x_offset + (piece_index % 7) * piece_size * 5
             y = y_offset + (piece_index // 7) * piece_size * 5
             draw_piece(x, y, piece_size, piece)
 
-        board.create_rectangle(0, 0, sqsize * 2 / 3, sqsize * 2 / 3, fill="lightgrey", outline="black", tags="board")
-
+        # draws main board
         for row in range(20):
             for column in range(20):
                 board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30, row * sqsize / 30 + sqsize / 30, fill="white", tags="board")
@@ -143,6 +158,7 @@ def main():
                 print(row, end=" ")
                 print()
 
+        # draws the preview board
         for row in range(8):
             for column in range(8):
                 board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
