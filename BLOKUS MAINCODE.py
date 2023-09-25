@@ -32,7 +32,7 @@ pieces_dictionary = {"one": [(0, 0)],
                      "four_i": [(0, 0), (-1, 0), (1, 0), (2, 0)],
                      "four_l": [(0, 0), (0, -1), (0, 1), (1, 1)],
                      "four_o": [(0, 0), (-1, 0), (0, -1), (-1, -1)],
-                     "four_s": [(0, 0), (0, -1), (1, 1), (1, -1)],
+                     "four_s": [(0, 0), (0, -1), (1, 1), (1, 0)],
                      "four_t": [(0, 0), (0, 1), (1, 0), (-1, 0)],
                      "f_f": [(0, 0), (-1, 0), (0, -1), (1, -1), (0, 1)],
                      "f_i": [(0, 0), (-1, 0), (-2, 0), (1, 0), (2, 0)],
@@ -48,8 +48,8 @@ pieces_dictionary = {"one": [(0, 0)],
                      "f_z": [(0, 0), (0, -1), (-1, -1), (1, 1), (0, 1)]
                      }
 
-for x in pieces_dictionary:
-    print(pieces_dictionary.get(x))
+for x in range(len(pieces)):
+    print(pieces[x])
 
 color = ["blue", "yellow", "red", "green"]
 
@@ -104,7 +104,7 @@ def main():
     game.geometry("900x900")
     game.minsize(width=600, height=600)
     game.title("BLOKUS")
-    board = tk.Canvas(game, width=900, height=900, bg="brown")
+    board = tk.Canvas(game, width=900, height=900, bg="lightgreen")
     board.grid(row=0, column=0, sticky=NW)
     board.pack(side=TOP, fill=BOTH, expand=YES)
 
@@ -120,7 +120,7 @@ def main():
         for row in range(15):
             for column in range(35):
                 board.create_rectangle(column * piece_size, row * piece_size + sqsize * 2 / 3,
-                                       column * piece_size + piece_size, row * piece_size + piece_size + sqsize * 2 / 3, fill="lightgreen")
+                                       column * piece_size + piece_size, row * piece_size + piece_size + sqsize * 2 / 3)
 
         # draws the red lines
         for row in range(3):
@@ -159,12 +159,31 @@ def main():
                 print()
 
         # draws the preview board
-        for row in range(8):
-            for column in range(8):
-                board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
-                                       sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30, fill="gray50")
+        for row in range(7):
+            for column in range(7):
+                if row == 0:
+                    board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
+                                           sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
+                                           fill="black")
 
-        board.create_rectangle(0, sqsize * 2 / 3, sqsize, sqsize)
+                elif row == 6:
+                    board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
+                                           sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
+                                           fill="black")
+
+                elif column == 0:
+                    board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
+                                           sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
+                                           fill="black")
+
+                elif column == 6:
+                    board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
+                                           sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
+                                           fill="black")
+
+                else:
+                    board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
+                                           sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30, fill="gray50")
 
         board.create_rectangle(sqsize * 21 / 30, sqsize * 12 / 36, sqsize * 29 / 30, sqsize * 14 / 36, fill=color[0])
         board.create_rectangle(sqsize * 26 / 36, sqsize * 15 / 36, sqsize * 34 / 36, sqsize * 17 / 36, fill="gray75", activefill="lightgreen", tags="skip")
@@ -196,14 +215,15 @@ def main():
 
     def on_place(event):
         global gameboard
+        sqsize = min(int(game.winfo_width()), int(game.winfo_height()))
         canvas = event.widget
         item_id = canvas.find_closest(event.x, event.y)
         current_color = canvas.itemcget(item_id, "fill")
         new_color = "white" if current_color == "black" else "black"
         canvas.itemconfig(item_id, fill=new_color)
 
-        col = int(event.x / 30)
-        row = int(event.y / 30)
+        col = int(event.x / (sqsize / 30))
+        row = int(event.y / (sqsize / 30))
 
         print(col, row)
         return col + 8 * row
