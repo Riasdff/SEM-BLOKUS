@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import *
 # import random
-
+piece_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
 pieces = [[(0, 0)],
           [(0, 0), [1, 0]],
           [(0, 0), [-1, 0], [1, 0]],
@@ -120,27 +120,29 @@ def main():
         for row in range(15):
             for column in range(35):
                 board.create_rectangle(column * piece_size, row * piece_size + sqsize * 2 / 3,
-                                       column * piece_size + piece_size, row * piece_size + piece_size + sqsize * 2 / 3)
+                                       column * piece_size + piece_size, row * piece_size + piece_size + sqsize * 2 / 3,
+                                       activefill="gray50")
 
         # draws the red lines
         for row in range(3):
-            board.create_line(0, row * piece_size * 5 + sqsize * 2 / 3, sqsize * 7 / 9, row * piece_size * 5 + sqsize * 2 / 3, fill="red", width=3)
+            board.create_line(0, row * piece_size * 5 + sqsize * 2 / 3, sqsize * 7 / 9, row * piece_size * 5 + sqsize * 2 / 3, fill="red", width=1)
             for column in range(7):
-                board.create_line(column * piece_size * 5, sqsize * 2 / 3, column * piece_size * 5, sqsize, fill="red", width=3)
+                board.create_line(column * piece_size * 5, sqsize * 2 / 3, column * piece_size * 5, sqsize, fill="red", width=1)
 
-        def draw_piece(x, y, piece_size, piece):
+        def draw_piece(piece_number, x, y, piece_size, piece):
             for cell in piece:
                 cell_x, cell_y = cell
                 board.create_rectangle(
                     x + cell_x * piece_size, y + cell_y * piece_size,
                     x + (cell_x + 1) * piece_size, y + (cell_y + 1) * piece_size,
-                    fill=color[0], outline='black', tags="piece"
+                    fill=color[0], outline='black', tags=f"{piece_numbers[piece_number]}"
                 )
+                print(piece_numbers[piece_number])
 
-        for piece_index, piece in enumerate(pieces):
-            x = x_offset + (piece_index % 7) * piece_size * 5
-            y = y_offset + (piece_index // 7) * piece_size * 5
-            draw_piece(x, y, piece_size, piece)
+        for piece_number, piece in enumerate(pieces):
+            x = int(x_offset + (piece_number % 7) * piece_size * 5)
+            y = int(y_offset + (piece_number // 7) * piece_size * 5)
+            draw_piece(piece_number, x, y, piece_size, piece)
 
         # draws main board
         for row in range(20):
