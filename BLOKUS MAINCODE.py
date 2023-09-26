@@ -111,10 +111,10 @@ def main():
     def draw():
         sqsize = min(int(game.winfo_width()), int(game.winfo_height()))
         fontsize = sqsize // 50
-        review_board = [[0 for row in range(8)] for column in range(8)]
-        gameboard = [[0 for col in range(20)] for row in range(20)]
+        review_board = [[0 for _ in range(5)] for _ in range(5)]
+        gameboard = [[0 for _ in range(20)] for _ in range(20)]
         piece_size = sqsize / 45
-        x_offset, y_offset = sqsize * 2 / 45, sqsize * 32 / 45
+        x_offset, y_offset = int(sqsize * 2 / 45), int(sqsize * 32 / 45)
 
         # draws the grid for the shapes
         for row in range(15):
@@ -137,7 +137,7 @@ def main():
                     x + (cell_x + 1) * piece_size, y + (cell_y + 1) * piece_size,
                     fill=color[0], outline='black', tags=f"{piece_numbers[piece_number]}"
                 )
-                print(piece_numbers[piece_number])
+                # print(piece_numbers[piece_number])
 
         for piece_number, piece in enumerate(pieces):
             x = int(x_offset + (piece_number % 7) * piece_size * 5)
@@ -149,8 +149,14 @@ def main():
             for column in range(20):
                 board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30, row * sqsize / 30 + sqsize / 30, fill="white", tags="board")
 
+
+        def draw_in_pb(event):
+            x_offset = sqsize * 22 / 30
+            y_offset = sqsize * 2 / 30
+
+            pass
+
         def draw_array():
-            global gameboard
             for row in gameboard:
                 print(row, end=" ")
                 print()
@@ -198,9 +204,13 @@ def main():
         board.create_text(sqsize * 30 / 36, sqsize * 20 / 36, text="TAKE BACK", font=("Showcard Gothic", fontsize), tags="take_back", activefill="white")
         board.create_text(sqsize * 30 / 36, sqsize * 22 / 36, text="QUIT GAME", font=("Showcard Gothic", fontsize), tags="quit", activefill="white")
 
+        draw_array()
+        draw_array_rb()
+
     def config(event=None):
         board.delete("all")
         draw()
+
 
     def on_place(event):
         global gameboard
