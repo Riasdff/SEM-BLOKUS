@@ -202,19 +202,6 @@ def main():
         board.delete("all")
         draw()
 
-    def click_piece(event):
-        # widget = event.widget
-        # widget.startX = event.x
-        # widget.startY = event.y
-        pass
-
-    def drag_piece(event):
-        # widget = event.widget
-        # x = widget.winfo_x() - widget.startX + event.x
-        # y = widget.winfo_y() - widget.startY + event.y
-        # widget.place(x=x, y=y)
-        pass
-
     def on_place(event):
         global gameboard
         sqsize = min(int(game.winfo_width()), int(game.winfo_height()))
@@ -359,8 +346,6 @@ def main():
     draw()
 
     board.tag_bind("board", "<Button-1>", on_place)
-    board.tag_bind("piece", "<Button-1>", click_piece)
-    board.tag_bind("piece", "<B1-Motion>", drag_piece)
     # board.tag_bind("board", "<Button-1>", PosIndex)
     board.tag_bind("skip", "<Button-1>", skip_turn)
     board.tag_bind("rules", "<Button-1>", rules_menu)
