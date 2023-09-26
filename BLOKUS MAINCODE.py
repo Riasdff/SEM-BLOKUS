@@ -363,6 +363,7 @@ def main():
     board.tag_bind("quit", "<Button-1>", quit)
     # board.bind("<Button-1>", update_score)
     # Every change in the window calls config function
+    game.bind("<Button-1>", lambda event: print(event))
     game.bind("<Configure>", config)
     game.mainloop()
 
