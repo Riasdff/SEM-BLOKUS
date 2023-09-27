@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import *
+from progression import *
 # import random
+
 piece_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
 pieces = [[(0, 0)],
           [(0, 0), [1, 0]],
@@ -51,8 +53,12 @@ pieces_dictionary = {"one": [(0, 0)],
 for x in range(len(pieces)):
     print(pieces[x])
 
+review_board = [[0 for _ in range(5)] for _ in range(5)]
+gameboard = [[0 for _ in range(20)] for _ in range(20)]
+
 color = ["blue", "yellow", "red", "green"]
 
+turn = 0
 score_b = 0
 score_y = 0
 score_r = 0
@@ -111,8 +117,7 @@ def main():
     def draw():
         sqsize = min(int(game.winfo_width()), int(game.winfo_height()))
         fontsize = sqsize // 50
-        review_board = [[0 for _ in range(5)] for _ in range(5)]
-        gameboard = [[0 for _ in range(20)] for _ in range(20)]
+
         piece_size = sqsize / 45
         x_offset, y_offset = int(sqsize * 2 / 45), int(sqsize * 32 / 45)
 
@@ -213,20 +218,44 @@ def main():
 
 
     def on_place(event):
-        global gameboard
+        global turn
         sqsize = min(int(game.winfo_width()), int(game.winfo_height()))
         canvas = event.widget
         item_id = canvas.find_closest(event.x, event.y)
         current_color = canvas.itemcget(item_id, "fill")
-        new_color = "white" if current_color == "black" else "black"
+        new_color = "white"
         canvas.itemconfig(item_id, fill=new_color)
 
         col = int(event.x / (sqsize / 30))
         row = int(event.y / (sqsize / 30))
 
-        print(col, row)
-        return col + 8 * row
+        if turn == 4:
+            new_color = "white"
+            turn = 0
 
+        if turn == 3:
+            new_color = "green"
+
+        if turn == 2:
+            new_color = "red"
+
+        if turn == 1:
+            new_color = "yellow"
+
+        if turn == 0:
+            new_color = "blue"
+
+        turn += 1
+
+        canvas.itemconfig(item_id, fill=new_color)
+        if gameboard[row][col] == 0:
+            gameboard[row][col] = turn
+
+        print(row, col)
+        print(gameboard)
+
+        game_progression.append(f"{new_color}: {row} {col}")
+        print(game_progression)
     # def update_score(event):
     #    global score_b
     #    score_b += 1
