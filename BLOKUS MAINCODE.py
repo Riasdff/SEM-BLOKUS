@@ -115,6 +115,7 @@ def main():
     board.pack(side=TOP, fill=BOTH, expand=YES)
 
     def draw():
+        canvas.delete("all")
         sqsize = min(int(game.winfo_width()), int(game.winfo_height()))
         fontsize = sqsize // 50
 
@@ -125,13 +126,13 @@ def main():
         for row in range(15):
             for column in range(35):
                 board.create_rectangle(column * piece_size, row * piece_size + sqsize * 2 / 3,
-                                       column * piece_size + piece_size, row * piece_size + piece_size + sqsize * 2 / 3,
-                                       activefill="gray50")
+                                      column * piece_size + piece_size, row * piece_size + piece_size + sqsize * 2 / 3,
+                                      activefill="gray50")
 
         # draws the red lines
-        for row in range(3):
+        for row in range(4):
             board.create_line(0, row * piece_size * 5 + sqsize * 2 / 3, sqsize * 7 / 9, row * piece_size * 5 + sqsize * 2 / 3, fill="red", width=1)
-            for column in range(7):
+            for column in range(8):
                 board.create_line(column * piece_size * 5, sqsize * 2 / 3, column * piece_size * 5, sqsize, fill="red", width=1)
 
         def draw_piece(piece_number, x, y, piece_size, piece):
@@ -140,7 +141,7 @@ def main():
                 board.create_rectangle(
                     x + cell_x * piece_size, y + cell_y * piece_size,
                     x + (cell_x + 1) * piece_size, y + (cell_y + 1) * piece_size,
-                    fill=color[0], outline='black', tags=f"{piece_numbers[piece_number]}"
+                    fill=color[0], outline='black', tags="piece"
                 )
                 # print(piece_numbers[piece_number])
 
@@ -152,14 +153,46 @@ def main():
         # draws main board
         for row in range(20):
             for column in range(20):
-                board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30, row * sqsize / 30 + sqsize / 30, fill="white", tags="board")
-
+                if gameboard[row][column] == 1:
+                    board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30,
+                                           row * sqsize / 30 + sqsize / 30, fill="blue", tags="board")
+                elif gameboard[row][column] == 2:
+                    board.create_rectangle(column * sqsize / 30, row * sqsize / 30,
+                                           column * sqsize / 30 + sqsize / 30,
+                                           row * sqsize / 30 + sqsize / 30, fill="yellow", tags="board")
+                elif gameboard[row][column] == 3:
+                    board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30,
+                                           row * sqsize / 30 + sqsize / 30, fill="red", tags="board")
+                elif gameboard[row][column] == 4:
+                    board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30,
+                                           row * sqsize / 30 + sqsize / 30, fill="green", tags="board")
+                else:
+                    board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30, row * sqsize / 30 + sqsize / 30, fill="white", tags="board")
 
         def draw_in_pb(event):
-            x_offset = sqsize * 22 / 30
-            y_offset = sqsize * 2 / 30
-
-            pass
+            global selected_piece
+            row = int(event.y / (sqsize / 9))
+            col = int(event.x / (sqsize / 9))
+            # print(row, col)
+            if row >= 6:
+                if col > 6:
+                    return None
+                else:
+                    if row >= 7:
+                        if col > 6:
+                            return None
+                        if row >= 8:
+                            if col > 6:
+                                return None
+                            else:
+                                selected_piece = col + 14
+                        else:
+                            selected_piece = col + 7
+                    else:
+                        selected_piece = col
+            print(pieces[selected_piece])
+            draw()
+            return selected_piece
 
         def draw_array():
             for row in gameboard:
@@ -172,31 +205,58 @@ def main():
                 print()
 
         # draws the preview board
-        for row in range(7):
-            for column in range(7):
+        def draw_pb():
+            global selected_piece
+            for row in range(7):
+                for column in range(7):
+                    if row == 0:
+                        board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
+                                               sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
+                                               fill="black")
+                    elif row == 6:
+                        board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
+                                               sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
+                                               fill="black")
+                    elif column == 0:
+                        board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
+                                               sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
+                                               fill="black")
+                    elif column == 6:
+                        board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
+                                               sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
+                                               fill="black")
+                    else:
+                        board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
+                                               sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30, fill="gray50")
+
+        def draw_piece_pb():
+            global selected_piece
+            x_offset = sqsize * 22 / 30
+            y_offset = sqsize * 2 / 30
+            if selected_piece is not None:
                 if row == 0:
                     board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
                                            sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
                                            fill="black")
-
                 elif row == 6:
                     board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
                                            sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
                                            fill="black")
-
                 elif column == 0:
                     board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
                                            sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
                                            fill="black")
-
                 elif column == 6:
                     board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
                                            sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
                                            fill="black")
-
                 else:
-                    board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
-                                           sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30, fill="gray50")
+                    piece_size = sqsize / 30
+                    for x, y in pieces[selected_piece]:
+                        board.create_rectangle(x_offset + x * piece_size + piece_size * 2, y_offset + y * piece_size + piece_size * 2,
+                                               x_offset + piece_size * x + piece_size * 3, y_offset + piece_size * y + piece_size * 3,
+                                               fill="blue", outline="black")
+
 
         board.create_rectangle(sqsize * 21 / 30, sqsize * 12 / 36, sqsize * 29 / 30, sqsize * 14 / 36, fill=color[0])
         board.create_rectangle(sqsize * 26 / 36, sqsize * 15 / 36, sqsize * 34 / 36, sqsize * 17 / 36, fill="gray75", activefill="lightgreen", tags="skip")
@@ -209,8 +269,12 @@ def main():
         board.create_text(sqsize * 30 / 36, sqsize * 20 / 36, text="TAKE BACK", font=("Showcard Gothic", fontsize), tags="take_back", activefill="white")
         board.create_text(sqsize * 30 / 36, sqsize * 22 / 36, text="QUIT GAME", font=("Showcard Gothic", fontsize), tags="quit", activefill="white")
 
+        draw_pb()
+        draw_piece_pb()
         draw_array()
         draw_array_rb()
+
+        board.bind("<Button-1>", draw_in_pb)
 
     def config(event=None):
         board.delete("all")
@@ -228,6 +292,9 @@ def main():
 
         col = int(event.x / (sqsize / 30))
         row = int(event.y / (sqsize / 30))
+
+        x_offset = int(sqsize / 30 * col)
+        y_offset = int(sqsize / 30 * row)
 
         if turn == 4:
             new_color = "white"
@@ -250,6 +317,16 @@ def main():
         canvas.itemconfig(item_id, fill=new_color)
         if gameboard[row][col] == 0:
             gameboard[row][col] = turn
+
+        piece_size = sqsize / 30
+        for x, y in pieces[selected_piece]:
+            board.create_rectangle(x_offset + x * piece_size,
+                                   y_offset + y * piece_size,
+                                   x_offset + piece_size * x + piece_size,
+                                   y_offset + piece_size * y + piece_size,
+                                   fill=new_color, outline="black")
+
+
 
         print(row, col)
         print(gameboard)
