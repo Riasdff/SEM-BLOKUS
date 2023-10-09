@@ -26,9 +26,32 @@ pieces = [[(0, 0)],
           [(0, 0), [-1, -1], [0, -1], [0, 1], [0, -2]],
           [(0, 0), [0, -1], [-1, -1], [1, 1], [0, 1]]
           ]
+rotate_counter = 0
+piece_rotations = [[[(0, 0)], [(0, 0)], [(0, 0)], [(0, 0)]],
+                   [[(0, 0), [1, 0]], [(0, 0), [0, -1]], [(0, 0), [-1, 0]], [(0, 0), [0, 1]]],
+                   [[(0, 0), [-1, 0], [1, 0]], [(0, 0), [0, 1], [0, -1]], [(0, 0), [1, 0], [-1, 0]], [(0, 0), [0, -1], [0, 1]]],
+                   [[(0, 0), [0, -1], [1, 0]], [(0, 0), [-1, 0], [0, -1]], [(0, 0), [0, 1], [-1, 0]], [(0, 0), [1, 0], [0, 1]]],
+                   [[(0, 0), [-1, 0], [1, 0], [2, 0]], [(0, 0), [0, 1], [0, -1], [0, -2]], [(0, 0), [-1, 0], [1, 0], [-2, 0]], [(0, 0), [0, -1], [0, 1], [0, 2]]],
+                   [[(0, 0), [0, -1], [0, 1], [1, 1]], [(0, 0), [1, 0], [-1, 0], [1, -1]], [(0, 0), [0, -1], [-1, -1], [0, 1]], [(0, 0), [-1, 0], [-1, 1], [1, 0]]],
+                   [[(0, 0), [1, 0], [1, -1], [0, -1]], [(0, 0), [-1, 0], [-1, -1], [0, -1]], [(0, 0), [-1, 1], [-1, 0], [0, 1]], [(0, 0), [0, 1], [1, 0], [1, 1]]],
+                   [[(0, 0), [0, -1], [1, 1], [1, 0]], [(0, 0), [-1, 0], [0, -1], [1, -1]], [(0, 0), [0, -1], [1, 1], [1, 0]], [(0, 0), [-1, 0], [0, -1], [1, -1]]],
+                   [[(0, 0), [0, 1], [1, 0], [-1, 0]], [(0, 0), [1, 0], [0, 1], [0, -1]], [(0, 0), [0, -1], [1, 0], [-1, 0]], [(0, 0), [-1, 0], [0, 1], [0, -1]]],
+                   [[(0, 0), [-1, 0], [0, -1], [1, -1], [0, 1]], [(0, 0), [-1, 0], [-1, -1], [1, 0], [0, 1]], [(0, 0), [-1, 1], [0, -1], [0, 1], [1, 0]], [(0, 0), [1, 0], [-1, 0], [1, 1], [0, -1]]],
+                   [[(0, 0), [-1, 0], [-2, 0], [1, 0], [2, 0]], [(0, 0), [0, -1], [0, -2], [0, 1], [0, 2]], [(0, 0), [-1, 0], [-2, 0], [1, 0], [2, 0]], [(0, 0), [0, -1], [0, -2], [0, 1], [0, 2]]],
+                   [[(0, 0), [0, 1], [0, -1], [0, -2], [1, 1]], [(0, 0), [-1, 0], [-2, 0], [1, 0], [1, -1]], [(0, 0), [-1,-1], [0, -1], [0, 1], [0, 2]], [(0, 0), [-1, 1], [-1, 0], [1, 0], [2, 0]]],
+                   [[(0, 0), [0, -1], [0, 1], [1, -1], [1, -2]], [(0, 0), [-1, -1], [-2, -1], [-1, 0], [1, 0]], [(0, 0), [-1, 1], [-1, 2], [0, 1], [0, -1]], [(0, 0), [-1, 0], [1, 0], [1, 1], [2, 1]]],
+                   [[(0, 0), [0, 1], [0, -1], [1, -1], [1, 0]], [(0, 0), [1, 0], [0, -1], [-1, -1], [-1, 0]], [(0, 0), [0, -1], [0, 1], [-1, 1], [-1, 0]], [(0, 0), [-1, 0], [1, 0], [0, 1], [1, 1]]],
+                   [[(0, 0), [0, 1], [0, -1], [-1, -1], [1, -1]], [(0, 0), [1, 0], [-1, 0], [-1, -1], [-1, 1]], [(0, 0), [-1, 1], [0, -1], [1, 1], [0, 1]], [(0, 0), [-1, 0], [1, -1], [1, 1], [1, 0]]],
+                   [[(0, 0), [-1, 0], [-1, -1], [1, 0], [1, -1]], [(0, 0), [0, -1], [0, 1], [-1, -1], [-1, 1]], [(0, 0), [-1, 0], [1, 0], [-1, 1], [1, 1]], [(0, 0), [0, -1], [0, 1], [1, -1], [1, 1]]],
+                   [[(0, 0), [-1, 0], [-2, 0], [0, -1], [0, -2]], [(0, 0), [-1, 0], [-2, 0], [0, 1], [0, 2]], [(0, 0), [1, 0], [2, 0], [0, 1], [0, 2]], [(0, 0), [1, 0], [2, 0], [0, -1], [0, -2]]],
+                   [[(0, 0), [0, 1], [-1, 1], [1, -1], [1, 0]], [(0, 0), [-1, -1], [0, -1], [1, 0], [1, 1]], [(0, 0), [-1, 0], [0, -1], [1, -1], [-1, 1]], [(0, 0), [-1, 0], [-1, -1], [1, 1], [0, 1]]],
+                   [[(0, 0), [-1, 0], [0, -1], [1, 0], [0, 1]], [(0, 0), [-1, 0], [0, -1], [1, 0], [0, 1]], [(0, 0), [-1, 0], [0, -1], [1, 0], [0, 1]], [(0, 0), [-1, 0], [0, -1], [1, 0], [0, 1]]],
+                   [[(0, 0), [-1, -1], [0, -1], [0, 1], [0, -2]], [(0, 0), [-1, 0], [-2, 0], [1, 0], [-1, 1]], [(0, 0), [1, 1], [0, 1], [0, -1], [0, 2]], [(0, 0), [1, -1], [1, 0], [-1, 0], [2, 0]]],
+                   [[(0, 0), [0, -1], [-1, -1], [1, 1], [0, 1]], [(0, 0), [-1, 0], [1, 0], [1, -1], [-1, 1]], [(0, 0), [0, -1], [-1, -1], [1, 1], [0, 1]], [(0, 0), [-1, 0], [1, 0], [1, -1], [-1, 1]]]
+                   ]
 
 pieces_dictionary = {"one": [(0, 0)],
-                     "two": [(0, 0), (1, 0)],
+                     "two": [(0, 0), [1, 0]],
                      "three_i": [(0, 0), (-1, 0), (1, 0)],
                      "three_l": [(0, 0), (0, -1), (1, 0)],
                      "four_i": [(0, 0), (-1, 0), (1, 0), (2, 0)],
@@ -190,7 +213,6 @@ def main():
                             selected_piece = col + 7
                     else:
                         selected_piece = col
-            print(pieces[selected_piece])
             draw()
             return selected_piece
 
@@ -252,11 +274,24 @@ def main():
                                            fill="black")
                 else:
                     piece_size = sqsize / 30
-                    for x, y in pieces[selected_piece]:
+                    for x, y in piece_rotations[selected_piece][rotate_counter]:
                         board.create_rectangle(x_offset + x * piece_size + piece_size * 2, y_offset + y * piece_size + piece_size * 2,
                                                x_offset + piece_size * x + piece_size * 3, y_offset + piece_size * y + piece_size * 3,
                                                fill="blue", outline="black")
 
+        def rotate(event=None):
+            global selected_piece, rotate_counter
+            x_offset = sqsize * 22 / 30
+            y_offset = sqsize * 2 / 30
+            piece_size = sqsize / 30
+            rotate_counter += 1
+            if rotate_counter > 3:
+                rotate_counter = 0
+            if selected_piece is not None:
+                canvas.delete("all")
+                draw()
+            else:
+                return None
 
         board.create_rectangle(sqsize * 21 / 30, sqsize * 12 / 36, sqsize * 29 / 30, sqsize * 14 / 36, fill=color[0])
         board.create_rectangle(sqsize * 26 / 36, sqsize * 15 / 36, sqsize * 34 / 36, sqsize * 17 / 36, fill="gray75", activefill="lightgreen", tags="skip")
@@ -271,10 +306,11 @@ def main():
 
         draw_pb()
         draw_piece_pb()
-        draw_array()
-        draw_array_rb()
+        #draw_array()
+        #draw_array_rb()
 
         board.bind("<Button-1>", draw_in_pb)
+        game.bind("<r>", rotate)
 
     def config(event=None):
         board.delete("all")
@@ -282,61 +318,67 @@ def main():
 
 
     def on_place(event):
-        global turn
-        sqsize = min(int(game.winfo_width()), int(game.winfo_height()))
-        canvas = event.widget
-        item_id = canvas.find_closest(event.x, event.y)
-        current_color = canvas.itemcget(item_id, "fill")
-        new_color = "white"
-        canvas.itemconfig(item_id, fill=new_color)
-
-        col = int(event.x / (sqsize / 30))
-        row = int(event.y / (sqsize / 30))
-
-        x_offset = int(sqsize / 30 * col)
-        y_offset = int(sqsize / 30 * row)
-
-        if turn == 4:
+        global turn, selected_piece, rotate_counter
+        if selected_piece is not None:
+            sqsize = min(int(game.winfo_width()), int(game.winfo_height()))
+            canvas = event.widget
+            item_id = canvas.find_closest(event.x, event.y)
+            current_color = canvas.itemcget(item_id, "fill")
             new_color = "white"
-            turn = 0
+            canvas.itemconfig(item_id, fill=new_color)
 
-        if turn == 3:
-            new_color = "green"
+            col = int(event.x / (sqsize / 30))
+            row = int(event.y / (sqsize / 30))
 
-        if turn == 2:
-            new_color = "red"
+            x_offset = int(sqsize / 30 * col)
+            y_offset = int(sqsize / 30 * row)
 
-        if turn == 1:
-            new_color = "yellow"
+            if turn == 4:
+                new_color = "white"
+                turn = 0
 
-        if turn == 0:
-            new_color = "blue"
+            if turn == 3:
+                new_color = "green"
+                turn = 4
 
-        turn += 1
+            if turn == 2:
+                new_color = "red"
+                turn = 3
 
-        canvas.itemconfig(item_id, fill=new_color)
-        if gameboard[row][col] == 0:
-            gameboard[row][col] = turn
+            if turn == 1:
+                new_color = "yellow"
+                turn = 2
 
-        piece_size = sqsize / 30
-        for x, y in pieces[selected_piece]:
-            board.create_rectangle(x_offset + x * piece_size,
-                                   y_offset + y * piece_size,
-                                   x_offset + piece_size * x + piece_size,
-                                   y_offset + piece_size * y + piece_size,
-                                   fill=new_color, outline="black")
+            if turn == 0:
+                new_color = "blue"
+                turn = 1
+
+            #canvas.itemconfig(item_id, fill=new_color)
+            #if gameboard[row][col] == 0:
+            #    gameboard[row][col] = turn
+
+            piece_size = sqsize / 30
+            for x, y in piece_rotations[selected_piece][rotate_counter]:
+                gameboard[row+y][col+x] = turn
+                print(x, y)
 
 
+            print(row, col)
+            for r in gameboard:
+                print(r, end=" ")
+                print()
 
-        print(row, col)
-        print(gameboard)
-
-        game_progression.append(f"{new_color}: {row} {col}")
-        print(game_progression)
-    # def update_score(event):
-    #    global score_b
-    #    score_b += 1
-    #    draw()
+            game_progression.append([selected_piece, rotate_counter, new_color, row, col])
+            print(game_progression)
+            selected_piece = None
+            rotate_counter = 0
+            draw()
+        else:
+            return None
+        # def update_score(event):
+        #    global score_b
+        #    score_b += 1
+        #    draw()
 
     def skip_turn(event):
          pass
@@ -407,7 +449,7 @@ def main():
                                  text="[LEFT MB] - Hover over a piece and click to select it. Place it on the board via click.",
                                  font=("Showcard Gothic", 12), width=500, anchor="w")
             r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 11 / window_grid,
-                                 text="[R] - Rotate the selected piece by 90 degrees clockwise.",
+                                 text="[R] - Rotate the selected piece by 90° counter-clockwise.",
                                  font=("Showcard Gothic", 12), width=500, anchor="w")
             r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 12 / window_grid,
                                  text="[E] - Emulate the selected piece in mirrored form.",
@@ -438,7 +480,7 @@ def main():
         r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 10 / window_grid, text="[LEFT MB] - Hover over a piece and click to select it. Place it on the board via click.",
                              font=("Showcard Gothic", 12), width=500, anchor="w")
         r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 11 / window_grid,
-                             text="[R] - Rotate the selected piece by 90 degrees clockwise.",
+                             text="[R] - Rotate the selected piece by 90° counter-clockwise.",
                              font=("Showcard Gothic", 12), width=500, anchor="w")
         r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 12 / window_grid,
                              text="[E] - Emulate the selected piece in mirrored form.",
@@ -469,7 +511,6 @@ def main():
     board.tag_bind("quit", "<Button-1>", quit)
     # board.bind("<Button-1>", update_score)
     # Every change in the window calls config function
-    game.bind("<Button-1>", lambda event: print(event))
     game.bind("<Configure>", config)
     game.mainloop()
 
