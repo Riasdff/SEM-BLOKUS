@@ -82,11 +82,13 @@ gameboard = [[0 for _ in range(20)] for _ in range(20)]
 color = ["white", "blue", "yellow", "red", "green"]
 turn = 1
 
+score = 0
+
 score_b = 0
 score_y = 0
 score_r = 0
 score_g = 0
-
+scores = [score_b, score_y, score_r, score_g]
 selected_piece = None
 mirrored = False
 
@@ -137,6 +139,22 @@ def main():
     board = tk.Canvas(game, width=900, height=900, bg="magenta")
     board.grid(row=0, column=0, sticky=NW)
     board.pack(side=TOP, fill=BOTH, expand=YES)
+
+    def scoreboard(points):
+        global score_y, score_b, score_r, score_g, turn, score
+        if turn == 4:
+            score_g += points
+        elif turn == 3:
+            score_r += points
+        elif turn == 2:
+            score_y += points
+        else:
+            score_b += points
+        print(score_b)
+        print(score_y)
+        print(score_r)
+        print(score_g)
+        score = 0
 
     def draw():
         canvas.delete("all")
@@ -192,6 +210,22 @@ def main():
                                            row * sqsize / 30 + sqsize / 30, fill="green", tags="board", outline="cyan")
                 else:
                     board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30, row * sqsize / 30 + sqsize / 30, fill="gray80", tags="board", outline="cyan")
+
+        for y_icon in range(4):
+            board.create_rectangle(sqsize / 30 * 24, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 0.5,
+                                   sqsize / 30 * 25.5, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 2, fill=color[y_icon + 1], width=3, outline="cyan")
+            board.create_rectangle(sqsize / 30 * 25.5, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 0.5,
+                                   sqsize / 30 * 28.5, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 2, width=3, outline="cyan", fill="gray80")
+            if y_icon == 0:
+                board.create_text(sqsize / 30 * 27, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_b}", font=("Showcard Gothic", 30))
+            elif y_icon == 1:
+                board.create_text(sqsize / 30 * 27, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_y}", font=("Showcard Gothic", 30))
+            elif y_icon == 2:
+                board.create_text(sqsize / 30 * 27, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_r}", font=("Showcard Gothic", 30))
+            else:
+                board.create_text(sqsize / 30 * 27, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_g}", font=("Showcard Gothic", 30))
+
+
 
         def draw_in_pb(event):
             global selected_piece, mirrored, rotate_counter
@@ -368,6 +402,7 @@ def main():
         #draw_array()
         #draw_array_rb()
 
+
         board.bind("<Button-1>", draw_in_pb)
         game.bind("<w>", rotate)
         game.bind("<e>", mirror_piece)
@@ -378,7 +413,7 @@ def main():
 
 
     def on_place(event):
-        global turn, selected_piece, rotate_counter, mirrored, color
+        global turn, selected_piece, rotate_counter, mirrored, color, score
         if selected_piece is not None:
             sqsize = min(int(game.winfo_width()), int(game.winfo_height()))
             canvas = event.widget
@@ -393,7 +428,7 @@ def main():
             x_offset = int(sqsize / 30 * col)
             y_offset = int(sqsize / 30 * row)
 
-
+            score = 0
 
             #canvas.itemconfig(item_id, fill=new_color)
             #if gameboard[row][col] == 0:
@@ -408,7 +443,7 @@ def main():
                 for x, y in piece_rotations[selected_piece][rotate_counter]:
                     gameboard[row+y][col+x] = turn
                     print(x, y)
-
+                    score += 1
 
             print(row, col)
             for r in gameboard:
@@ -420,20 +455,69 @@ def main():
             selected_piece = None
             rotate_counter = 0
             mirrored = False
+            scoreboard(score)
             draw()
             turn += 1
             if turn > 4:
                 turn = 1
+            canvas.delete("all")
             draw()
         else:
             return None
-        # def update_score(event):
-        #    global score_b
-        #    score_b += 1
-        #    draw()
+
 
     def skip_turn(event):
-         pass
+        global turn
+        turn += 1
+        if turn > 4:
+            turn = 1
+        canvas.delete("all")
+        game_progression.append([-1, f"TURN SKIPPED BY: <{color[turn]}> "])
+        print(game_progression)
+        draw()
+
+    def take_back(event):
+        global turn, selected_piece, rotate_counter, mirrored, score
+        if not game_progression:
+            return None
+        else:
+            if game_progression[-1][0] == -1:
+                turn -= 1
+                if turn < 1:
+                    turn = 4
+                game_progression.pop()
+            else:
+                selected_piece = game_progression[-1][0]
+                mirrored = game_progression[-1][1]
+                rotate_counter = game_progression[-1][2]
+
+                row = game_progression[-1][4]
+                col = game_progression[-1][5]
+
+                if mirrored is True:
+                    for x, y in piece_rotations[selected_piece][rotate_counter]:
+                        gameboard[row + y][col - x] = 0
+                        score -= 1
+                else:
+                    for x, y in piece_rotations[selected_piece][rotate_counter]:
+                        gameboard[row + y][col + x] = 0
+                        score -= 1
+                turn -= 1
+                if turn < 1:
+                    turn = 4
+                game_progression.pop()
+        for r in gameboard:
+            print(r, end=" ")
+            print()
+
+        print(game_progression)
+        scoreboard(score)
+        selected_piece = None
+        rotate_counter = 0
+        mirrored = False
+        canvas.delete("all")
+        draw()
+        return selected_piece, rotate_counter, mirrored
 
     def rules_menu(event):
         global rules
@@ -553,9 +637,6 @@ def main():
         r_canvas.tag_bind("previous", "<Button-1>", rules_previous)
         r_canvas.tag_bind("close", "<Button-1>", close_menu)
         rules.mainloop()
-
-    def take_back(event):
-        pass
 
     def quit(event):
         game.destroy()
