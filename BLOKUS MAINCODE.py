@@ -26,9 +26,32 @@ pieces = [[(0, 0)],
           [(0, 0), [-1, -1], [0, -1], [0, 1], [0, -2]],
           [(0, 0), [0, -1], [-1, -1], [1, 1], [0, 1]]
           ]
+rotate_counter = 0
+piece_rotations = [[[(0, 0)], [(0, 0)], [(0, 0)], [(0, 0)]],
+                   [[(0, 0), [1, 0]], [(0, 0), [0, -1]], [(0, 0), [-1, 0]], [(0, 0), [0, 1]]],
+                   [[(0, 0), [-1, 0], [1, 0]], [(0, 0), [0, 1], [0, -1]], [(0, 0), [1, 0], [-1, 0]], [(0, 0), [0, -1], [0, 1]]],
+                   [[(0, 0), [0, -1], [1, 0]], [(0, 0), [-1, 0], [0, -1]], [(0, 0), [0, 1], [-1, 0]], [(0, 0), [1, 0], [0, 1]]],
+                   [[(0, 0), [-1, 0], [1, 0], [2, 0]], [(0, 0), [0, 1], [0, -1], [0, -2]], [(0, 0), [-1, 0], [1, 0], [-2, 0]], [(0, 0), [0, -1], [0, 1], [0, 2]]],
+                   [[(0, 0), [0, -1], [0, 1], [1, 1]], [(0, 0), [1, 0], [-1, 0], [1, -1]], [(0, 0), [0, -1], [-1, -1], [0, 1]], [(0, 0), [-1, 0], [-1, 1], [1, 0]]],
+                   [[(0, 0), [1, 0], [1, -1], [0, -1]], [(0, 0), [-1, 0], [-1, -1], [0, -1]], [(0, 0), [-1, 1], [-1, 0], [0, 1]], [(0, 0), [0, 1], [1, 0], [1, 1]]],
+                   [[(0, 0), [0, -1], [1, 1], [1, 0]], [(0, 0), [-1, 0], [0, -1], [1, -1]], [(0, 0), [0, -1], [1, 1], [1, 0]], [(0, 0), [-1, 0], [0, -1], [1, -1]]],
+                   [[(0, 0), [0, 1], [1, 0], [-1, 0]], [(0, 0), [1, 0], [0, 1], [0, -1]], [(0, 0), [0, -1], [1, 0], [-1, 0]], [(0, 0), [-1, 0], [0, 1], [0, -1]]],
+                   [[(0, 0), [-1, 0], [0, -1], [1, -1], [0, 1]], [(0, 0), [-1, 0], [-1, -1], [1, 0], [0, 1]], [(0, 0), [-1, 1], [0, -1], [0, 1], [1, 0]], [(0, 0), [1, 0], [-1, 0], [1, 1], [0, -1]]],
+                   [[(0, 0), [-1, 0], [-2, 0], [1, 0], [2, 0]], [(0, 0), [0, -1], [0, -2], [0, 1], [0, 2]], [(0, 0), [-1, 0], [-2, 0], [1, 0], [2, 0]], [(0, 0), [0, -1], [0, -2], [0, 1], [0, 2]]],
+                   [[(0, 0), [0, 1], [0, -1], [0, -2], [1, 1]], [(0, 0), [-1, 0], [-2, 0], [1, 0], [1, -1]], [(0, 0), [-1,-1], [0, -1], [0, 1], [0, 2]], [(0, 0), [-1, 1], [-1, 0], [1, 0], [2, 0]]],
+                   [[(0, 0), [0, -1], [0, 1], [1, -1], [1, -2]], [(0, 0), [-1, -1], [-2, -1], [-1, 0], [1, 0]], [(0, 0), [-1, 1], [-1, 2], [0, 1], [0, -1]], [(0, 0), [-1, 0], [1, 0], [1, 1], [2, 1]]],
+                   [[(0, 0), [0, 1], [0, -1], [1, -1], [1, 0]], [(0, 0), [1, 0], [0, -1], [-1, -1], [-1, 0]], [(0, 0), [0, -1], [0, 1], [-1, 1], [-1, 0]], [(0, 0), [-1, 0], [1, 0], [0, 1], [1, 1]]],
+                   [[(0, 0), [0, 1], [0, -1], [-1, -1], [1, -1]], [(0, 0), [1, 0], [-1, 0], [-1, -1], [-1, 1]], [(0, 0), [-1, 1], [0, -1], [1, 1], [0, 1]], [(0, 0), [-1, 0], [1, -1], [1, 1], [1, 0]]],
+                   [[(0, 0), [-1, 0], [-1, -1], [1, 0], [1, -1]], [(0, 0), [0, -1], [0, 1], [-1, -1], [-1, 1]], [(0, 0), [-1, 0], [1, 0], [-1, 1], [1, 1]], [(0, 0), [0, -1], [0, 1], [1, -1], [1, 1]]],
+                   [[(0, 0), [-1, 0], [-2, 0], [0, -1], [0, -2]], [(0, 0), [-1, 0], [-2, 0], [0, 1], [0, 2]], [(0, 0), [1, 0], [2, 0], [0, 1], [0, 2]], [(0, 0), [1, 0], [2, 0], [0, -1], [0, -2]]],
+                   [[(0, 0), [0, 1], [-1, 1], [1, -1], [1, 0]], [(0, 0), [-1, -1], [0, -1], [1, 0], [1, 1]], [(0, 0), [-1, 0], [0, -1], [1, -1], [-1, 1]], [(0, 0), [-1, 0], [-1, -1], [1, 1], [0, 1]]],
+                   [[(0, 0), [-1, 0], [0, -1], [1, 0], [0, 1]], [(0, 0), [-1, 0], [0, -1], [1, 0], [0, 1]], [(0, 0), [-1, 0], [0, -1], [1, 0], [0, 1]], [(0, 0), [-1, 0], [0, -1], [1, 0], [0, 1]]],
+                   [[(0, 0), [-1, -1], [0, -1], [0, 1], [0, -2]], [(0, 0), [-1, 0], [-2, 0], [1, 0], [-1, 1]], [(0, 0), [1, 1], [0, 1], [0, -1], [0, 2]], [(0, 0), [1, -1], [1, 0], [-1, 0], [2, 0]]],
+                   [[(0, 0), [0, -1], [-1, -1], [1, 1], [0, 1]], [(0, 0), [-1, 0], [1, 0], [1, -1], [-1, 1]], [(0, 0), [0, -1], [-1, -1], [1, 1], [0, 1]], [(0, 0), [-1, 0], [1, 0], [1, -1], [-1, 1]]]
+                   ]
 
 pieces_dictionary = {"one": [(0, 0)],
-                     "two": [(0, 0), (1, 0)],
+                     "two": [(0, 0), [1, 0]],
                      "three_i": [(0, 0), (-1, 0), (1, 0)],
                      "three_l": [(0, 0), (0, -1), (1, 0)],
                      "four_i": [(0, 0), (-1, 0), (1, 0), (2, 0)],
@@ -56,15 +79,16 @@ for x in range(len(pieces)):
 review_board = [[0 for _ in range(5)] for _ in range(5)]
 gameboard = [[0 for _ in range(20)] for _ in range(20)]
 
-color = ["blue", "yellow", "red", "green"]
+color = ["white", "blue", "yellow", "red", "green"]
+turn = 1
 
-turn = 0
 score_b = 0
 score_y = 0
 score_r = 0
 score_g = 0
 
 selected_piece = None
+mirrored = False
 
 root = tk.Tk()
 root.title("BLOKUS GAME")
@@ -110,7 +134,7 @@ def main():
     game.geometry("900x900")
     game.minsize(width=600, height=600)
     game.title("BLOKUS")
-    board = tk.Canvas(game, width=900, height=900, bg="lightgreen")
+    board = tk.Canvas(game, width=900, height=900, bg="magenta")
     board.grid(row=0, column=0, sticky=NW)
     board.pack(side=TOP, fill=BOTH, expand=YES)
 
@@ -123,17 +147,17 @@ def main():
         x_offset, y_offset = int(sqsize * 2 / 45), int(sqsize * 32 / 45)
 
         # draws the grid for the shapes
-        for row in range(15):
+        """for row in range(15):
             for column in range(35):
                 board.create_rectangle(column * piece_size, row * piece_size + sqsize * 2 / 3,
                                       column * piece_size + piece_size, row * piece_size + piece_size + sqsize * 2 / 3,
-                                      activefill="gray50")
+                                      activefill="gray50")"""
 
         # draws the red lines
         for row in range(4):
-            board.create_line(0, row * piece_size * 5 + sqsize * 2 / 3, sqsize * 7 / 9, row * piece_size * 5 + sqsize * 2 / 3, fill="red", width=1)
+            board.create_line(0, row * piece_size * 5 + sqsize * 2 / 3, sqsize * 7 / 9, row * piece_size * 5 + sqsize * 2 / 3, fill="cyan", width=2)
             for column in range(8):
-                board.create_line(column * piece_size * 5, sqsize * 2 / 3, column * piece_size * 5, sqsize, fill="red", width=1)
+                board.create_line(column * piece_size * 5, sqsize * 2 / 3, column * piece_size * 5, sqsize, fill="cyan", width=2)
 
         def draw_piece(piece_number, x, y, piece_size, piece):
             for cell in piece:
@@ -141,7 +165,7 @@ def main():
                 board.create_rectangle(
                     x + cell_x * piece_size, y + cell_y * piece_size,
                     x + (cell_x + 1) * piece_size, y + (cell_y + 1) * piece_size,
-                    fill=color[0], outline='black', tags="piece"
+                    fill=color[turn], outline='white', tags="piece"
                 )
                 # print(piece_numbers[piece_number])
 
@@ -155,22 +179,24 @@ def main():
             for column in range(20):
                 if gameboard[row][column] == 1:
                     board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30,
-                                           row * sqsize / 30 + sqsize / 30, fill="blue", tags="board")
+                                           row * sqsize / 30 + sqsize / 30, fill="blue", tags="board", outline="cyan")
                 elif gameboard[row][column] == 2:
                     board.create_rectangle(column * sqsize / 30, row * sqsize / 30,
                                            column * sqsize / 30 + sqsize / 30,
-                                           row * sqsize / 30 + sqsize / 30, fill="yellow", tags="board")
+                                           row * sqsize / 30 + sqsize / 30, fill="yellow", tags="board", outline="cyan")
                 elif gameboard[row][column] == 3:
                     board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30,
-                                           row * sqsize / 30 + sqsize / 30, fill="red", tags="board")
+                                           row * sqsize / 30 + sqsize / 30, fill="red", tags="board", outline="cyan")
                 elif gameboard[row][column] == 4:
                     board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30,
-                                           row * sqsize / 30 + sqsize / 30, fill="green", tags="board")
+                                           row * sqsize / 30 + sqsize / 30, fill="green", tags="board", outline="cyan")
                 else:
-                    board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30, row * sqsize / 30 + sqsize / 30, fill="white", tags="board")
+                    board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30, row * sqsize / 30 + sqsize / 30, fill="gray80", tags="board", outline="cyan")
 
         def draw_in_pb(event):
-            global selected_piece
+            global selected_piece, mirrored, rotate_counter
+            mirrored = False
+            rotate_counter = 0
             row = int(event.y / (sqsize / 9))
             col = int(event.x / (sqsize / 9))
             # print(row, col)
@@ -190,7 +216,6 @@ def main():
                             selected_piece = col + 7
                     else:
                         selected_piece = col
-            print(pieces[selected_piece])
             draw()
             return selected_piece
 
@@ -210,6 +235,65 @@ def main():
             for row in range(7):
                 for column in range(7):
                     if row == 0:
+                        board.create_rectangle(sqsize * 43 / 60 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
+                                               sqsize * 45 / 60 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
+                                               fill="purple", outline="purple")
+                    elif row == 6:
+                        board.create_rectangle(sqsize * 43 / 60 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
+                                               sqsize * 45 / 60 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
+                                               fill="purple", outline="purple")
+                    elif column == 0:
+                        board.create_rectangle(sqsize * 43 / 60 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
+                                               sqsize * 45 / 60 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
+                                               fill="purple", outline="purple")
+                    elif column == 6:
+                        board.create_rectangle(sqsize * 43 / 60 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
+                                               sqsize * 45 / 60 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
+                                               fill="purple", outline="purple")
+                    else:
+                        board.create_rectangle(sqsize * 43 / 60 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
+                                               sqsize * 45 / 60 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30, fill="gray80", outline="cyan")
+
+        def draw_piece_pb():
+            global selected_piece
+            x_offset = sqsize * 45 / 60
+            y_offset = sqsize * 4 / 60
+            if selected_piece is not None:
+                if mirrored is True:
+                    if row == 0:
+                        board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30,
+                                               sqsize * 1 / 30 + row * sqsize / 30,
+                                               sqsize * 22 / 30 + column * sqsize / 30,
+                                               sqsize * 2 / 30 + row * sqsize / 30,
+                                               fill="purple")
+                    elif row == 6:
+                        board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30,
+                                               sqsize * 1 / 30 + row * sqsize / 30,
+                                               sqsize * 22 / 30 + column * sqsize / 30,
+                                               sqsize * 2 / 30 + row * sqsize / 30,
+                                               fill="purple")
+                    elif column == 0:
+                        board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30,
+                                               sqsize * 1 / 30 + row * sqsize / 30,
+                                               sqsize * 22 / 30 + column * sqsize / 30,
+                                               sqsize * 2 / 30 + row * sqsize / 30,
+                                               fill="purple")
+                    elif column == 6:
+                        board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30,
+                                               sqsize * 1 / 30 + row * sqsize / 30,
+                                               sqsize * 22 / 30 + column * sqsize / 30,
+                                               sqsize * 2 / 30 + row * sqsize / 30,
+                                               fill="purple")
+                    else:
+                        piece_size = sqsize / 30
+                        for x, y in piece_rotations[selected_piece][rotate_counter]:
+                            board.create_rectangle((x_offset + (-x) * piece_size + piece_size * 2),
+                                                   y_offset + y * piece_size + piece_size * 2,
+                                                   (x_offset + piece_size * (-x) + piece_size * 3),
+                                                   y_offset + piece_size * y + piece_size * 3,
+                                                   fill=color[turn], outline="cyan")
+                else:
+                    if row == 0:
                         board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
                                                sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
                                                fill="black")
@@ -226,43 +310,53 @@ def main():
                                                sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
                                                fill="black")
                     else:
-                        board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
-                                               sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30, fill="gray50")
+                        piece_size = sqsize / 30
+                        for x, y in piece_rotations[selected_piece][rotate_counter]:
+                            board.create_rectangle(x_offset + x * piece_size + piece_size * 2, y_offset + y * piece_size + piece_size * 2,
+                                                   x_offset + piece_size * x + piece_size * 3, y_offset + piece_size * y + piece_size * 3,
+                                                   fill=color[turn], outline="cyan")
 
-        def draw_piece_pb():
-            global selected_piece
-            x_offset = sqsize * 22 / 30
-            y_offset = sqsize * 2 / 30
+        def rotate(event=None):
+            global selected_piece, rotate_counter
+            rotate_counter += 1
+            if rotate_counter > 3:
+                rotate_counter = 0
             if selected_piece is not None:
-                if row == 0:
-                    board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
-                                           sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
-                                           fill="black")
-                elif row == 6:
-                    board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
-                                           sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
-                                           fill="black")
-                elif column == 0:
-                    board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
-                                           sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
-                                           fill="black")
-                elif column == 6:
-                    board.create_rectangle(sqsize * 21 / 30 + column * sqsize / 30, sqsize * 1 / 30 + row * sqsize / 30,
-                                           sqsize * 22 / 30 + column * sqsize / 30, sqsize * 2 / 30 + row * sqsize / 30,
-                                           fill="black")
-                else:
-                    piece_size = sqsize / 30
-                    for x, y in pieces[selected_piece]:
-                        board.create_rectangle(x_offset + x * piece_size + piece_size * 2, y_offset + y * piece_size + piece_size * 2,
-                                               x_offset + piece_size * x + piece_size * 3, y_offset + piece_size * y + piece_size * 3,
-                                               fill="blue", outline="black")
+                canvas.delete("all")
+                draw()
+            else:
+                return None
 
+        def rotate_ccw(event=None):
+            global selected_piece, rotate_counter
+            rotate_counter -= 1
+            if rotate_counter < 0:
+                rotate_counter = 3
 
-        board.create_rectangle(sqsize * 21 / 30, sqsize * 12 / 36, sqsize * 29 / 30, sqsize * 14 / 36, fill=color[0])
-        board.create_rectangle(sqsize * 26 / 36, sqsize * 15 / 36, sqsize * 34 / 36, sqsize * 17 / 36, fill="gray75", activefill="lightgreen", tags="skip")
-        board.create_rectangle(sqsize * 26 / 36, sqsize * 17 / 36, sqsize * 34 / 36, sqsize * 19 / 36, fill="gray75", activefill="lightgreen", tags="rules")
-        board.create_rectangle(sqsize * 26 / 36, sqsize * 19 / 36, sqsize * 34 / 36, sqsize * 21 / 36, fill="gray75", activefill="lightgreen", tags="take_back")
-        board.create_rectangle(sqsize * 26 / 36, sqsize * 21 / 36, sqsize * 34 / 36, sqsize * 23 / 36, fill="gray50", activefill="red", tags="quit")
+            if selected_piece is not None:
+                canvas.delete("all")
+                draw()
+            else:
+                return None
+
+        def mirror_piece(event=None):
+            global mirrored
+            if mirrored is False:
+                mirrored = True
+                canvas.delete("all")
+                draw()
+                return mirrored
+            else:
+                mirrored = False
+                canvas.delete("all")
+                draw()
+                return mirrored
+
+        board.create_rectangle(sqsize * 21 / 30, sqsize * 22 / 72, sqsize * 29 / 30, sqsize * 27 / 72, fill=color[turn], outline="cyan", width=3)
+        board.create_rectangle(sqsize * 26 / 36, sqsize * 15 / 36, sqsize * 34 / 36, sqsize * 17 / 36, fill="gray75", activefill="lightgreen", tags="skip", outline="cyan", width=3)
+        board.create_rectangle(sqsize * 26 / 36, sqsize * 17 / 36, sqsize * 34 / 36, sqsize * 19 / 36, fill="gray75", activefill="lightgreen", tags="rules", outline="cyan", width=3)
+        board.create_rectangle(sqsize * 26 / 36, sqsize * 19 / 36, sqsize * 34 / 36, sqsize * 21 / 36, fill="gray75", activefill="lightgreen", tags="take_back", outline="cyan", width=3)
+        board.create_rectangle(sqsize * 26 / 36, sqsize * 21 / 36, sqsize * 34 / 36, sqsize * 23 / 36, fill="gray50", activefill="red", tags="quit", outline="cyan", width=3)
 
         board.create_text(sqsize * 30 / 36, sqsize * 16 / 36, text="SKIP TURN", font=("Showcard Gothic", fontsize), tags="skip", activefill="white")
         board.create_text(sqsize * 30 / 36, sqsize * 18 / 36, text="RULES", font=("Showcard Gothic", fontsize), tags="rules", activefill="white")
@@ -271,72 +365,72 @@ def main():
 
         draw_pb()
         draw_piece_pb()
-        draw_array()
-        draw_array_rb()
+        #draw_array()
+        #draw_array_rb()
 
         board.bind("<Button-1>", draw_in_pb)
-
+        game.bind("<w>", rotate)
+        game.bind("<e>", mirror_piece)
+        game.bind("<r>", rotate_ccw)
     def config(event=None):
         board.delete("all")
         draw()
 
 
     def on_place(event):
-        global turn
-        sqsize = min(int(game.winfo_width()), int(game.winfo_height()))
-        canvas = event.widget
-        item_id = canvas.find_closest(event.x, event.y)
-        current_color = canvas.itemcget(item_id, "fill")
-        new_color = "white"
-        canvas.itemconfig(item_id, fill=new_color)
-
-        col = int(event.x / (sqsize / 30))
-        row = int(event.y / (sqsize / 30))
-
-        x_offset = int(sqsize / 30 * col)
-        y_offset = int(sqsize / 30 * row)
-
-        if turn == 4:
+        global turn, selected_piece, rotate_counter, mirrored, color
+        if selected_piece is not None:
+            sqsize = min(int(game.winfo_width()), int(game.winfo_height()))
+            canvas = event.widget
+            item_id = canvas.find_closest(event.x, event.y)
+            current_color = canvas.itemcget(item_id, "fill")
             new_color = "white"
-            turn = 0
+            canvas.itemconfig(item_id, fill=new_color)
 
-        if turn == 3:
-            new_color = "green"
+            col = int(event.x / (sqsize / 30))
+            row = int(event.y / (sqsize / 30))
 
-        if turn == 2:
-            new_color = "red"
-
-        if turn == 1:
-            new_color = "yellow"
-
-        if turn == 0:
-            new_color = "blue"
-
-        turn += 1
-
-        canvas.itemconfig(item_id, fill=new_color)
-        if gameboard[row][col] == 0:
-            gameboard[row][col] = turn
-
-        piece_size = sqsize / 30
-        for x, y in pieces[selected_piece]:
-            board.create_rectangle(x_offset + x * piece_size,
-                                   y_offset + y * piece_size,
-                                   x_offset + piece_size * x + piece_size,
-                                   y_offset + piece_size * y + piece_size,
-                                   fill=new_color, outline="black")
+            x_offset = int(sqsize / 30 * col)
+            y_offset = int(sqsize / 30 * row)
 
 
 
-        print(row, col)
-        print(gameboard)
+            #canvas.itemconfig(item_id, fill=new_color)
+            #if gameboard[row][col] == 0:
+            #    gameboard[row][col] = turn
 
-        game_progression.append(f"{new_color}: {row} {col}")
-        print(game_progression)
-    # def update_score(event):
-    #    global score_b
-    #    score_b += 1
-    #    draw()
+            piece_size = sqsize / 30
+            if mirrored is True:
+                for x, y in piece_rotations[selected_piece][rotate_counter]:
+                    gameboard[row + y][col - x] = turn
+                    print(x, y)
+            else:
+                for x, y in piece_rotations[selected_piece][rotate_counter]:
+                    gameboard[row+y][col+x] = turn
+                    print(x, y)
+
+
+            print(row, col)
+            for r in gameboard:
+                print(r, end=" ")
+                print()
+
+            game_progression.append([selected_piece, mirrored, rotate_counter, color[turn], row, col])
+            print(game_progression)
+            selected_piece = None
+            rotate_counter = 0
+            mirrored = False
+            draw()
+            turn += 1
+            if turn > 4:
+                turn = 1
+            draw()
+        else:
+            return None
+        # def update_score(event):
+        #    global score_b
+        #    score_b += 1
+        #    draw()
 
     def skip_turn(event):
          pass
@@ -406,11 +500,15 @@ def main():
             r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 10 / window_grid,
                                  text="[LEFT MB] - Hover over a piece and click to select it. Place it on the board via click.",
                                  font=("Showcard Gothic", 12), width=500, anchor="w")
-            r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 11 / window_grid,
-                                 text="[R] - Rotate the selected piece by 90 degrees clockwise.",
+            r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 14 / window_grid,
+                                 text="[R] - Rotate the selected piece by 90° clockwise.",
                                  font=("Showcard Gothic", 12), width=500, anchor="w")
-            r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 12 / window_grid,
-                                 text="[E] - Emulate the selected piece in mirrored form.",
+            r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 12.5 / window_grid,
+                                 text="[E] - Emulate the selected piece in mirrored form along the Y-AXIS. BE AWARE THAT THE"
+                                      " ROTATE BUTTONS CHANGE DIRECTIONS WHILE THE PIECE IS MIRRORED!",
+                                 font=("Showcard Gothic", 12), width=500, anchor="w")
+            r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 11 / window_grid,
+                                 text="[W] - Rotate the selected piece by 90° counterclockwise.",
                                  font=("Showcard Gothic", 12), width=500, anchor="w")
         def close_menu(event):
             rules.withdraw()
@@ -437,11 +535,15 @@ def main():
                              font=("Showcard Gothic", 30))
         r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 10 / window_grid, text="[LEFT MB] - Hover over a piece and click to select it. Place it on the board via click.",
                              font=("Showcard Gothic", 12), width=500, anchor="w")
-        r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 11 / window_grid,
-                             text="[R] - Rotate the selected piece by 90 degrees clockwise.",
+        r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 14 / window_grid,
+                             text="[R] - Rotate the selected piece by 90° clockwise.",
                              font=("Showcard Gothic", 12), width=500, anchor="w")
-        r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 12 / window_grid,
-                             text="[E] - Emulate the selected piece in mirrored form.",
+        r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 12.5 / window_grid,
+                             text="[E] - Emulate the selected piece in mirrored form along the Y-AXIS. BE AWARE THAT THE"
+                                  " ROTATE BUTTONS CHANGE DIRECTIONS WHILE THE PIECE IS MIRRORED!",
+                             font=("Showcard Gothic", 12), width=500, anchor="w")
+        r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 11 / window_grid,
+                             text="[W] - Rotate the selected piece by 90° counterclockwise.",
                              font=("Showcard Gothic", 12), width=500, anchor="w")
         r_canvas.create_text(window_sqsize * 31 / window_grid / 2, window_sqsize * 35 / window_grid / 2,
                              text="PAGE 1/2", font=("Showcard Gothic", 15))
@@ -469,7 +571,6 @@ def main():
     board.tag_bind("quit", "<Button-1>", quit)
     # board.bind("<Button-1>", update_score)
     # Every change in the window calls config function
-    game.bind("<Button-1>", lambda event: print(event))
     game.bind("<Configure>", config)
     game.mainloop()
 
