@@ -73,8 +73,8 @@ pieces_dictionary = {"one": [(0, 0)],
                      "f_z": [(0, 0), (0, -1), (-1, -1), (1, 1), (0, 1)]
                      }
 
-for x in range(len(pieces)):
-    print(pieces[x])
+"""for x in range(len(pieces)):
+    print(pieces[x])"""
 
 review_board = [[0 for _ in range(5)] for _ in range(5)]
 gameboard = [[0 for _ in range(20)] for _ in range(20)]
@@ -150,10 +150,6 @@ def main():
             score_y += points
         else:
             score_b += points
-        print(score_b)
-        print(score_y)
-        print(score_r)
-        print(score_g)
         score = 0
 
     def draw():
@@ -438,11 +434,10 @@ def main():
             if mirrored is True:
                 for x, y in piece_rotations[selected_piece][rotate_counter]:
                     gameboard[row + y][col - x] = turn
-                    print(x, y)
+                    score += 1
             else:
                 for x, y in piece_rotations[selected_piece][rotate_counter]:
                     gameboard[row+y][col+x] = turn
-                    print(x, y)
                     score += 1
 
             print(row, col)
