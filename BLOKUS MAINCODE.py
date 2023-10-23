@@ -153,7 +153,7 @@ def main():
         score = 0
 
     def draw():
-        canvas.delete("all")
+        board.delete("all")
         sqsize = min(int(game.winfo_width()), int(game.winfo_height()))
         fontsize = sqsize // 50
 
@@ -352,7 +352,7 @@ def main():
             if rotate_counter > 3:
                 rotate_counter = 0
             if selected_piece is not None:
-                canvas.delete("all")
+                board.delete("all")
                 draw()
             else:
                 return None
@@ -364,7 +364,7 @@ def main():
                 rotate_counter = 3
 
             if selected_piece is not None:
-                canvas.delete("all")
+                board.delete("all")
                 draw()
             else:
                 return None
@@ -373,12 +373,12 @@ def main():
             global mirrored
             if mirrored is False:
                 mirrored = True
-                canvas.delete("all")
+                board.delete("all")
                 draw()
                 return mirrored
             else:
                 mirrored = False
-                canvas.delete("all")
+                board.delete("all")
                 draw()
                 return mirrored
 
@@ -412,25 +412,12 @@ def main():
         global turn, selected_piece, rotate_counter, mirrored, color, score
         if selected_piece is not None:
             sqsize = min(int(game.winfo_width()), int(game.winfo_height()))
-            canvas = event.widget
-            item_id = canvas.find_closest(event.x, event.y)
-            current_color = canvas.itemcget(item_id, "fill")
-            new_color = "white"
-            canvas.itemconfig(item_id, fill=new_color)
 
             col = int(event.x / (sqsize / 30))
             row = int(event.y / (sqsize / 30))
 
-            x_offset = int(sqsize / 30 * col)
-            y_offset = int(sqsize / 30 * row)
-
             score = 0
 
-            #canvas.itemconfig(item_id, fill=new_color)
-            #if gameboard[row][col] == 0:
-            #    gameboard[row][col] = turn
-
-            piece_size = sqsize / 30
             if mirrored is True:
                 for x, y in piece_rotations[selected_piece][rotate_counter]:
                     gameboard[row + y][col - x] = turn
