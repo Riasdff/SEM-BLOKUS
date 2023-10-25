@@ -155,9 +155,14 @@ def main():
         score = 0
 
     def draw():
+        global score_b, score_y, score_r, score_g
         board.delete("all")
         sqsize = min(int(game.winfo_width()), int(game.winfo_height()))
         fontsize = sqsize // 50
+        score_b = 0
+        score_y = 0
+        score_r = 0
+        score_g = 0
 
         piece_size = sqsize / 45
         x_offset, y_offset = int(sqsize * 2 / 45), int(sqsize * 32 / 45)
@@ -169,6 +174,7 @@ def main():
                                       column * piece_size + piece_size, row * piece_size + piece_size + sqsize * 2 / 3,
                                       activefill="gray50")"""
 
+        # draws separate canvas for the pieces
         board.create_rectangle(0, sqsize / 30 * 20, sqsize / 45 * 35, sqsize, fill="slateblue2", outline=outline)
 
         # draws the red lines
@@ -177,6 +183,7 @@ def main():
             for column in range(8):
                 board.create_line(column * piece_size * 5, sqsize * 2 / 3, column * piece_size * 5, sqsize, fill=outline, width=2)
 
+        # draws the piece with the provided information from the function below
         def draw_piece(piece_number, x, y, piece_size, piece):
             for cell in piece:
                 cell_x, cell_y = cell
@@ -187,6 +194,7 @@ def main():
                 )
                 # print(piece_numbers[piece_number])
 
+        # sorts every piece into the grid and calls the draw function immediately after
         for piece_number, piece in enumerate(pieces):
             x = int(x_offset + (piece_number % 7) * piece_size * 5)
             y = int(y_offset + (piece_number // 7) * piece_size * 5)
@@ -198,18 +206,24 @@ def main():
                 if gameboard[row][column] == 1:
                     board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30,
                                            row * sqsize / 30 + sqsize / 30, fill="blue", tags="board", outline=outline)
+                    score_b += 1
                 elif gameboard[row][column] == 2:
                     board.create_rectangle(column * sqsize / 30, row * sqsize / 30,
                                            column * sqsize / 30 + sqsize / 30,
                                            row * sqsize / 30 + sqsize / 30, fill="yellow", tags="board", outline=outline)
+                    score_y += 1
                 elif gameboard[row][column] == 3:
                     board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30,
                                            row * sqsize / 30 + sqsize / 30, fill="red", tags="board", outline=outline)
+                    score_r += 1
                 elif gameboard[row][column] == 4:
                     board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30,
                                            row * sqsize / 30 + sqsize / 30, fill="green", tags="board", outline=outline)
+                    score_g += 1
                 else:
                     board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30, row * sqsize / 30 + sqsize / 30, fill="gray80", tags="board", outline=outline)
+
+        # defaults every corner to the color index for its determined piece
         if gameboard[19][0] == 0:
             gameboard[19][0] = -1
         if gameboard[0][0] == 0:
@@ -219,22 +233,29 @@ def main():
         if gameboard[19][19] == 0:
             gameboard[19][19] = -4
 
-        for y_icon in range(4):
-            board.create_rectangle(sqsize / 30 * 24.5, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 0.5,
-                                   sqsize / 30 * 26, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 2, fill=color[y_icon + 1], width=3, outline=outline)
-            board.create_rectangle(sqsize / 30 * 26, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 0.5,
-                                   sqsize / 30 * 29, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 2, width=3, outline=outline, fill="gray80")
-            if y_icon == 0:
-                board.create_text(sqsize / 30 * 27.5, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_b}", font=(font, 30))
-            elif y_icon == 1:
-                board.create_text(sqsize / 30 * 27.5, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_y}", font=(font, 30))
-            elif y_icon == 2:
-                board.create_text(sqsize / 30 * 27.5, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_r}", font=(font, 30))
-            else:
-                board.create_text(sqsize / 30 * 27.5, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_g}", font=(font, 30))
+        # P - Keypress returns gameboard as array in console
+        def print_gameboard(event=None):
+            for r in gameboard:
+                print(r, end=" ")
+                print()
 
+        # draws the scoreboard
+        def draw_scoreboard():
+            for y_icon in range(4):
+                board.create_rectangle(sqsize / 30 * 24.5, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 0.5,
+                                       sqsize / 30 * 26, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 2, fill=color[y_icon + 1], width=3, outline=outline)
+                board.create_rectangle(sqsize / 30 * 26, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 0.5,
+                                       sqsize / 30 * 29, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 2, width=3, outline=outline, fill="gray80")
+                if y_icon == 0:
+                    board.create_text(sqsize / 30 * 27.5, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_b}", font=(font, 30))
+                elif y_icon == 1:
+                    board.create_text(sqsize / 30 * 27.5, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_y}", font=(font, 30))
+                elif y_icon == 2:
+                    board.create_text(sqsize / 30 * 27.5, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_r}", font=(font, 30))
+                else:
+                    board.create_text(sqsize / 30 * 27.5, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_g}", font=(font, 30))
 
-
+        # Click - Left mouse button press within the piece canvas draws the piece that was selected
         def draw_in_pb(event):
             global selected_piece, mirrored, rotate_counter
             mirrored = False
@@ -261,11 +282,7 @@ def main():
             draw()
             return selected_piece
 
-        def draw_array():
-            for row in gameboard:
-                print(row, end=" ")
-                print()
-
+        # UNUSED FUNCTION
         def draw_array_rb():
             for row in review_board:
                 print(row, end=" ")
@@ -302,6 +319,7 @@ def main():
             board.create_line(sqsize / 30 * 21.5, sqsize / 30 * 1, sqsize / 30 * 21.5, sqsize / 30 * 8, fill=outline)
             board.create_line(sqsize / 30 * 28.5, sqsize / 30 * 1, sqsize / 30 * 28.5, sqsize / 30 * 8, fill=outline)
 
+        # draws the piece inside the preview board
         def draw_piece_pb():
             global selected_piece
             x_offset = sqsize * 45 / 60
@@ -364,6 +382,7 @@ def main():
                                                    x_offset + piece_size * x + piece_size * 3, y_offset + piece_size * y + piece_size * 3,
                                                    fill=color[turn], outline=outline)
 
+        # R - Keypress rotates the piece clockwise (and while mirrored ccw)
         def rotate(event=None):
             global selected_piece, rotate_counter
             rotate_counter += 1
@@ -375,6 +394,7 @@ def main():
             else:
                 return None
 
+        # W - Keypress rotates the piece counterclockwise (and while mirrored clockwise)
         def rotate_ccw(event=None):
             global selected_piece, rotate_counter
             rotate_counter -= 1
@@ -387,6 +407,7 @@ def main():
             else:
                 return None
 
+        # E - Keypress mirrors the piece along the y-axis
         def mirror_piece(event=None):
             global mirrored
             if mirrored is False:
@@ -400,32 +421,38 @@ def main():
                 draw()
                 return mirrored
 
-        board.create_rectangle(sqsize * 21 / 30, sqsize * 22 / 72, sqsize * 29 / 30, sqsize * 27 / 72, fill=color[turn], outline=outline, width=3)
-        board.create_rectangle(sqsize * 26 / 36, sqsize * 15 / 36, sqsize * 34 / 36, sqsize * 17 / 36, fill="gray75", activefill="lightgreen", tags="skip", outline=outline, width=3)
-        board.create_rectangle(sqsize * 26 / 36, sqsize * 17 / 36, sqsize * 34 / 36, sqsize * 19 / 36, fill="gray75", activefill="lightgreen", tags="rules", outline=outline, width=3)
-        board.create_rectangle(sqsize * 26 / 36, sqsize * 19 / 36, sqsize * 34 / 36, sqsize * 21 / 36, fill="gray75", activefill="lightgreen", tags="take_back", outline=outline, width=3)
-        board.create_rectangle(sqsize * 26 / 36, sqsize * 21 / 36, sqsize * 34 / 36, sqsize * 23 / 36, fill="gray50", activefill="red", tags="quit", outline=outline, width=3)
+        # draws the buttons with text
+        def draw_buttons():
+            board.create_rectangle(sqsize * 21 / 30, sqsize * 22 / 72, sqsize * 29 / 30, sqsize * 27 / 72, fill=color[turn], outline=outline, width=3)
+            board.create_rectangle(sqsize * 26 / 36, sqsize * 15 / 36, sqsize * 34 / 36, sqsize * 17 / 36, fill="gray75", activefill="lightgreen", tags="skip", outline=outline, width=3)
+            board.create_rectangle(sqsize * 26 / 36, sqsize * 17 / 36, sqsize * 34 / 36, sqsize * 19 / 36, fill="gray75", activefill="lightgreen", tags="rules", outline=outline, width=3)
+            board.create_rectangle(sqsize * 26 / 36, sqsize * 19 / 36, sqsize * 34 / 36, sqsize * 21 / 36, fill="gray75", activefill="lightgreen", tags="take_back", outline=outline, width=3)
+            board.create_rectangle(sqsize * 26 / 36, sqsize * 21 / 36, sqsize * 34 / 36, sqsize * 23 / 36, fill="gray50", activefill="red", tags="quit", outline=outline, width=3)
 
-        board.create_text(sqsize * 30 / 36, sqsize * 16 / 36, text="SKIP TURN", font=(font, fontsize), tags="skip", activefill="white")
-        board.create_text(sqsize * 30 / 36, sqsize * 18 / 36, text="RULES", font=(font, fontsize), tags="rules", activefill="white")
-        board.create_text(sqsize * 30 / 36, sqsize * 20 / 36, text="TAKE BACK", font=(font, fontsize), tags="take_back", activefill="white")
-        board.create_text(sqsize * 30 / 36, sqsize * 22 / 36, text="QUIT GAME", font=(font, fontsize), tags="quit", activefill="white")
+            board.create_text(sqsize * 30 / 36, sqsize * 16 / 36, text="SKIP TURN", font=(font, fontsize), tags="skip", activefill="white")
+            board.create_text(sqsize * 30 / 36, sqsize * 18 / 36, text="RULES", font=(font, fontsize), tags="rules", activefill="white")
+            board.create_text(sqsize * 30 / 36, sqsize * 20 / 36, text="TAKE BACK", font=(font, fontsize), tags="take_back", activefill="white")
+            board.create_text(sqsize * 30 / 36, sqsize * 22 / 36, text="QUIT GAME", font=(font, fontsize), tags="quit", activefill="white")
 
+        draw_scoreboard()
+        draw_buttons()
         draw_pb()
         draw_piece_pb()
-        #draw_array()
-        #draw_array_rb()
-
+        # draw_array_rb()
 
         board.bind("<Button-1>", draw_in_pb)
+        game.bind("<p>", print_gameboard)
         game.bind("<w>", rotate)
         game.bind("<e>", mirror_piece)
         game.bind("<r>", rotate_ccw)
+
+    # every resize of the window calls this function
     def config(event=None):
         board.delete("all")
         draw()
 
-
+    # Click - left mouse button press checks if a piece has been selected,
+    # if it placeable and if so draw it on the gameboard
     def on_place(event):
         global turn, selected_piece, rotate_counter, mirrored, color, score
         if selected_piece is not None:
@@ -433,85 +460,165 @@ def main():
 
             col = int(event.x / (sqsize / 30))
             row = int(event.y / (sqsize / 30))
+            placeable = False
 
             score = 0
+            checking_board = [[0 for _ in range(25)] for _ in range(25)]
+
+            def remove(x_i, y_i):
+                global score
+                if mirrored is True:
+                    for x, y in piece_rotations[selected_piece][rotate_counter]:
+                        try:
+                            gameboard[row + y][col - x] = 0
+                        except IndexError:
+                            score = 0
+                else:
+                    for x, y in piece_rotations[selected_piece][rotate_counter]:
+                        try:
+                            gameboard[row + y][col + x] = 0
+                        except IndexError:
+                            score = 0
+                if score_b > 0 and score_y > 0 and score_r > 0 and score_g > 0:
+                    print("PIECE CAN NOT BE PLACED! TRY AGAIN!")
+                return None
 
             if mirrored is True:
                 for x, y in piece_rotations[selected_piece][rotate_counter]:
                     row_i = row + y
                     col_i = col - x
-                    gameboard[row_i][col_i] = turn
-                    score += 1
+                    if row_i < 0 or row_i > 19 or col_i < 0 or col_i > 19:
+                        remove(row_i, col_i)
+                    else:
+                        gameboard[row_i][col_i] = turn
+                        score += 1
+
             else:
                 for x, y in piece_rotations[selected_piece][rotate_counter]:
-                    gameboard[row+y][col+x] = turn
-                    score += 1
+                    row_i = row + y
+                    col_i = col + x
+                    if row_i < 0 or row_i > 19 or col_i < 0 or col_i > 19:
+                        remove(row_i, col_i)
+                    else:
+                        gameboard[row_i][col_i] = turn
+                        score += 1
 
             if turn == 1:
                 if gameboard[19][0] == -1:
                     if mirrored is True:
                         for x, y in piece_rotations[selected_piece][rotate_counter]:
-                            gameboard[row+y][col-x] = 0
+                            row_i = row + y
+                            col_i = col - x
+                            if row_i < 0 or row_i > 19 or col_i < 0 or col_i > 19:
+                                remove(row_i, col_i)
+                            else:
+                                gameboard[row + y][col - x] = 0
 
                     else:
                         for x, y in piece_rotations[selected_piece][rotate_counter]:
-                            gameboard[row+y][col+x] = 0
+                            row_i = row + y
+                            col_i = col + x
+                            if row_i < 0 or row_i > 19 or col_i < 0 or col_i > 19:
+                                remove(row_i, col_i)
+                            else:
+                                gameboard[row + y][col + x] = 0
                     score = 0
+                    print("INVALID FIRST MOVE! TRY AGAIN!")
                     return None
+                else:
+                    placeable = True
             if turn == 2:
                 if gameboard[0][0] == -2:
                     if mirrored is True:
                         for x, y in piece_rotations[selected_piece][rotate_counter]:
-                            gameboard[row+y][col-x] = 0
+                            row_i = row + y
+                            col_i = col - x
+                            if row_i < 0 or row_i > 19 or col_i < 0 or col_i > 19:
+                                remove(row_i, col_i)
+                            else:
+                                gameboard[row + y][col - x] = 0
 
                     else:
                         for x, y in piece_rotations[selected_piece][rotate_counter]:
-                            gameboard[row+y][col+x] = 0
+                            row_i = row + y
+                            col_i = col + x
+                            if row_i < 0 or row_i > 19 or col_i < 0 or col_i > 19:
+                                remove(row_i, col_i)
+                            else:
+                                gameboard[row + y][col + x] = 0
                     score = 0
+                    print("INVALID FIRST MOVE! TRY AGAIN!")
                     return None
+                else:
+                    placeable = True
             if turn == 3:
                 if gameboard[0][19] == -3:
                     if mirrored is True:
                         for x, y in piece_rotations[selected_piece][rotate_counter]:
-                            gameboard[row+y][col-x] = 0
+                            row_i = row + y
+                            col_i = col - x
+                            if row_i < 0 or row_i > 19 or col_i < 0 or col_i > 19:
+                                remove(row_i, col_i)
+                            else:
+                                gameboard[row + y][col - x] = 0
 
                     else:
                         for x, y in piece_rotations[selected_piece][rotate_counter]:
-                            gameboard[row+y][col+x] = 0
+                            row_i = row + y
+                            col_i = col + x
+                            if row_i < 0 or row_i > 19 or col_i < 0 or col_i > 19:
+                                remove(row_i, col_i)
+                            else:
+                                gameboard[row + y][col + x] = 0
                     score = 0
+                    print("INVALID FIRST MOVE! TRY AGAIN!")
                     return None
+                else:
+                    placeable = True
             if turn == 4:
                 if gameboard[19][19] == -4:
                     if mirrored is True:
                         for x, y in piece_rotations[selected_piece][rotate_counter]:
-                            gameboard[row+y][col-x] = 0
+                            row_i = row + y
+                            col_i = col - x
+                            if row_i < 0 or row_i > 19 or col_i < 0 or col_i > 19:
+                                remove(row_i, col_i)
+                            else:
+                                gameboard[row + y][col - x] = 0
 
                     else:
                         for x, y in piece_rotations[selected_piece][rotate_counter]:
-                            gameboard[row + y][col + x] = 0
+                            row_i = row + y
+                            col_i = col + x
+                            if row_i < 0 or row_i > 19 or col_i < 0 or col_i > 19:
+                                remove(row_i, col_i)
+                            else:
+                                gameboard[row + y][col + x] = 0
                     score = 0
+                    print("INVALID FIRST MOVE! TRY AGAIN!")
                     return None
-            print(row, col)
-            for r in gameboard:
-                print(r, end=" ")
-                print()
+                else:
+                    placeable = True
 
-            game_progression.append([selected_piece, mirrored, rotate_counter, color[turn], row, col])
-            print(game_progression)
-            selected_piece = None
-            rotate_counter = 0
-            mirrored = False
-            scoreboard(score)
-            draw()
-            turn += 1
-            if turn > 4:
-                turn = 1
-            canvas.delete("all")
-            draw()
+            if placeable is True:
+                print(row, col)
+
+                game_progression.append([selected_piece, mirrored, rotate_counter, color[turn], row, col])
+                print(game_progression)
+                selected_piece = None
+                rotate_counter = 0
+                mirrored = False
+                scoreboard(score)
+                draw()
+                turn += 1
+                if turn > 4:
+                    turn = 1
+                canvas.delete("all")
+                draw()
         else:
             return None
 
-
+    # CANVAS BUTTON - left mouse button click skips turn manually
     def skip_turn(event):
         global turn, selected_piece, mirrored, rotate_counter
         turn += 1
@@ -525,6 +632,7 @@ def main():
         print(game_progression)
         draw()
 
+    # CANVAS BUTTON - left mouse button click takes back one move
     def take_back(event):
         global turn, selected_piece, rotate_counter, mirrored, score
         if not game_progression:
@@ -545,19 +653,50 @@ def main():
 
                 if mirrored is True:
                     for x, y in piece_rotations[selected_piece][rotate_counter]:
-                        gameboard[row + y][col - x] = 0
+                        row_i = row + y
+                        col_i = col - x
+                        gameboard[row_i][col_i] = 0
+                        if turn == 4:
+                            if row_i == 19 and col_i == 19:
+                                gameboard[row_i][col_i] = -4
+                        elif turn == 3:
+                            if row_i == 0 and col_i == 19:
+                                gameboard[row_i][col_i] = -3
+                        elif turn == 2:
+                            if row_i == 0 and col_i == 0:
+                                gameboard[row_i][col_i] = -2
+                        elif turn == 1:
+                            if row_i == 19 and col_i == 0:
+                                gameboard[row_i][col_i] = -1
                         score -= 1
                 else:
                     for x, y in piece_rotations[selected_piece][rotate_counter]:
-                        gameboard[row + y][col + x] = 0
+                        row_i = row + y
+                        col_i = col + x
+                        try:
+                            gameboard[row_i][col_i] = 0
+                        except IndexError:
+                            print("NOT IN GAMEBOARD")
+
+                        if turn == 4:
+                            if row_i == 19 and col_i == 19:
+                                gameboard[row_i][col_i] = -4
+                        elif turn == 3:
+                            if row_i == 0 and col_i == 19:
+                                gameboard[row_i][col_i] = -3
+                        elif turn == 2:
+                            if row_i == 0 and col_i == 0:
+                                gameboard[row_i][col_i] = -2
+                        elif turn == 1:
+                            if row_i == 19 and col_i == 0:
+                                gameboard[row_i][col_i] = -1
                         score -= 1
                 turn -= 1
                 if turn < 1:
                     turn = 4
                 game_progression.pop()
-        for r in gameboard:
-            print(r, end=" ")
-            print()
+        if not game_progression:
+            gameboard[19][0] = -1
 
         print(game_progression)
         scoreboard(score)
@@ -568,6 +707,7 @@ def main():
         draw()
         return selected_piece, rotate_counter, mirrored
 
+    # CANVAS BUTTON - left mouse button click opens rules menu with all the important information to play
     def rules_menu(event):
         global rules
 
@@ -643,6 +783,9 @@ def main():
             r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 11 / window_grid,
                                  text="[W] - Rotate the selected piece by 90° counterclockwise.",
                                  font=(font, 12), width=500, anchor="w")
+            r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 15 / window_grid,
+                                 text="[P] - Print the gameboard as an array via press.",
+                                 font=(font, 12), width=500, anchor="w")
         def close_menu(event):
             rules.withdraw()
 
@@ -678,6 +821,9 @@ def main():
         r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 11 / window_grid,
                              text="[W] - Rotate the selected piece by 90° counterclockwise.",
                              font=(font, 12), width=500, anchor="w")
+        r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 15 / window_grid,
+                             text="[P] - Print the gameboard as an array via press.",
+                             font=(font, 12), width=500, anchor="w")
         r_canvas.create_text(window_sqsize * 31 / window_grid / 2, window_sqsize * 35 / window_grid / 2,
                              text="PAGE 1/2", font=(font, 15))
         r_canvas.create_text(window_sqsize * 31 / window_grid / 2, window_sqsize * 33 / window_grid / 2,
@@ -687,6 +833,7 @@ def main():
         r_canvas.tag_bind("close", "<Button-1>", close_menu)
         rules.mainloop()
 
+    # CANVAS BUTTON - left mouse button click ends the application
     def quit(event):
         game.destroy()
 
@@ -694,12 +841,11 @@ def main():
     draw()
 
     board.tag_bind("board", "<Button-1>", on_place)
-    # board.tag_bind("board", "<Button-1>", PosIndex)
     board.tag_bind("skip", "<Button-1>", skip_turn)
     board.tag_bind("rules", "<Button-1>", rules_menu)
     board.tag_bind("take_back", "<Button-1>", take_back)
     board.tag_bind("quit", "<Button-1>", quit)
-    # board.bind("<Button-1>", update_score)
+
     # Every change in the window calls config function
     game.bind("<Configure>", config)
     game.mainloop()
@@ -708,6 +854,12 @@ def main():
 start_button = tk.Button(canvas, text="START GAME", font=(font, 20), command=main)
 start_button.pack(side=tk.BOTTOM, pady=30)
 
-# for item in player_menu.keys():
-#    print(item, ": ", player_menu[item])
 root.mainloop()
+
+
+"""
+AS LONG AS THE GAME IS BEING PLAYED PROPERLY THERE WILL BE NO
+NOTABLE BUGS! THERE ARE STILL BUGS WITH PLACING YOUR PIECE
+IN THE CORRECT CORNER BUT THE PIECE CAN NOT BE DISPLAYED ON THE BOARD
+BUT IT STILL GETS DRAWN
+"""
