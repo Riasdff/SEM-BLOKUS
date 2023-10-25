@@ -208,18 +208,18 @@ def main():
                     board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30, row * sqsize / 30 + sqsize / 30, fill="gray80", tags="board", outline="cyan")
 
         for y_icon in range(4):
-            board.create_rectangle(sqsize / 30 * 24, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 0.5,
-                                   sqsize / 30 * 25.5, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 2, fill=color[y_icon + 1], width=3, outline="cyan")
-            board.create_rectangle(sqsize / 30 * 25.5, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 0.5,
-                                   sqsize / 30 * 28.5, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 2, width=3, outline="cyan", fill="gray80")
+            board.create_rectangle(sqsize / 30 * 24.5, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 0.5,
+                                   sqsize / 30 * 26, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 2, fill=color[y_icon + 1], width=3, outline="cyan")
+            board.create_rectangle(sqsize / 30 * 26, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 0.5,
+                                   sqsize / 30 * 29, sqsize / 30 * 20 + y_icon * 2.5 * sqsize / 30 + sqsize / 30 * 2, width=3, outline="cyan", fill="gray80")
             if y_icon == 0:
-                board.create_text(sqsize / 30 * 27, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_b}", font=("Showcard Gothic", 30))
+                board.create_text(sqsize / 30 * 27.5, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_b}", font=("Showcard Gothic", 30))
             elif y_icon == 1:
-                board.create_text(sqsize / 30 * 27, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_y}", font=("Showcard Gothic", 30))
+                board.create_text(sqsize / 30 * 27.5, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_y}", font=("Showcard Gothic", 30))
             elif y_icon == 2:
-                board.create_text(sqsize / 30 * 27, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_r}", font=("Showcard Gothic", 30))
+                board.create_text(sqsize / 30 * 27.5, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_r}", font=("Showcard Gothic", 30))
             else:
-                board.create_text(sqsize / 30 * 27, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_g}", font=("Showcard Gothic", 30))
+                board.create_text(sqsize / 30 * 27.5, sqsize / 30 * 21.25 + sqsize / 30 * y_icon * 2.5, text=f"{score_g}", font=("Showcard Gothic", 30))
 
 
 
