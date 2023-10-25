@@ -575,17 +575,17 @@ def main():
             r_canvas.delete("all")
             r_canvas.create_text(window_sqsize * 9 / window_grid, window_sqsize * 1 / window_grid, text="CORE RULES",
                                  font=(font, 30))
-            r_canvas.create_rectangle(window_sqsize * 1 / window_grid, window_sqsize * 16 / window_grid,
-                                      window_sqsize * 4 / window_grid, window_sqsize * 17 / window_grid,
-                                      fill="lightblue", activefill="blue", tags="previous")
+            r_canvas.create_rectangle(window_sqsize * 0.5 / window_grid, window_sqsize * 16 / window_grid,
+                                      window_sqsize * 4.5 / window_grid, window_sqsize * 17 / window_grid,
+                                      fill="gray75", activefill="lightgreen", tags="previous")
             r_canvas.create_rectangle(window_sqsize * 14 / window_grid, window_sqsize * 16 / window_grid,
                                       window_sqsize * 17 / window_grid, window_sqsize * 17 / window_grid,
-                                      fill="lightblue", activefill="blue", tags="close")
+                                      fill="gray75", activefill="lightgreen", tags="close")
             r_canvas.create_text(window_sqsize * 31 / window_grid / 2, window_sqsize * 35 / window_grid / 2, text="PAGE 2/2", font=(font, 15))
             r_canvas.create_text(window_sqsize * 5 / window_grid / 2, window_sqsize * 33 / window_grid / 2,
-                                 text="PREVIOUS", font=(font, 15), tags="previous")
+                                 text="PREVIOUS", font=(font, 15), tags="previous", activefill="white")
             r_canvas.create_text(window_sqsize * 31 / window_grid / 2, window_sqsize * 33 / window_grid / 2,
-                                 text="CLOSE", font=(font, 15), tags="close")
+                                 text="CLOSE", font=(font, 15), tags="close", activefill="white")
             r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 4.5 / window_grid,
                                  text="Every player starts on 0 points. The play order starts with blue at the bottom"
                                       " left side of the board. The turns go clockwise continuing with yellow, red and"
@@ -623,11 +623,11 @@ def main():
                                  , font=(font, 12), width=500, anchor="w")
             r_canvas.create_rectangle(window_sqsize * 14 / window_grid, window_sqsize * 16 / window_grid,
                                       window_sqsize * 17 / window_grid, window_sqsize * 17 / window_grid,
-                                      fill="lightblue", activefill="blue", tags="next")
+                                      fill="gray75", activefill="lightgreen", tags="next")
             r_canvas.create_text(window_sqsize * 31 / window_grid / 2, window_sqsize * 35 / window_grid / 2,
                                  text="PAGE 1/2", font=(font, 15))
             r_canvas.create_text(window_sqsize * 31 / window_grid / 2, window_sqsize * 33 / window_grid / 2,
-                                 text="NEXT", font=(font, 15), tags="next")
+                                 text="NEXT", font=(font, 15), tags="next", activefill="white")
             r_canvas.create_text(window_sqsize * 9 / window_grid, window_sqsize * 8.5 / window_grid, text=font,
                                  font=(font, 30))
             r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 10 / window_grid,
@@ -649,7 +649,7 @@ def main():
         rules = tk.Tk()
         rules.title("RULES")
         rules.resizable(False, False)
-        r_canvas = tk.Canvas(rules, width=600, height=600, bg="lightgreen")
+        r_canvas = tk.Canvas(rules, width=600, height=600, bg="lightcoral")
         r_canvas.pack()
         window_sqsize = 600
         window_grid = 18
@@ -663,7 +663,7 @@ def main():
                                                                                                     "One player controls blue and red while\n the other controls yellow and green.\n"
                                                                                                     "Both colors of each player count towards their total points. The playing order remains the same."
                                                                                                     , font=(font, 12), width=500, anchor="w")
-        r_canvas.create_rectangle(window_sqsize * 14 / window_grid, window_sqsize * 16 / window_grid, window_sqsize * 17 / window_grid, window_sqsize * 17 / window_grid, fill="lightblue", activefill="blue", tags="next")
+        r_canvas.create_rectangle(window_sqsize * 14 / window_grid, window_sqsize * 16 / window_grid, window_sqsize * 17 / window_grid, window_sqsize * 17 / window_grid, fill="gray75", activefill="lightgreen", tags="next")
         r_canvas.create_text(window_sqsize * 9 / window_grid, window_sqsize * 8.5 / window_grid, text="KEYBINDS",
                              font=(font, 30))
         r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 10 / window_grid, text="[LEFT MB] - Hover over a piece and click to select it. Place it on the board via click.",
@@ -681,7 +681,7 @@ def main():
         r_canvas.create_text(window_sqsize * 31 / window_grid / 2, window_sqsize * 35 / window_grid / 2,
                              text="PAGE 1/2", font=(font, 15))
         r_canvas.create_text(window_sqsize * 31 / window_grid / 2, window_sqsize * 33 / window_grid / 2,
-                             text="NEXT", font=(font, 15), tags="next")
+                             text="NEXT", font=(font, 15), tags="next", activefill="white")
         r_canvas.tag_bind("next", "<Button-1>", rules_next)
         r_canvas.tag_bind("previous", "<Button-1>", rules_previous)
         r_canvas.tag_bind("close", "<Button-1>", close_menu)
