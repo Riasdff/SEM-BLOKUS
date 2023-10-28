@@ -824,3 +824,8 @@ start_button = tk.Button(canvas, text="START GAME", font=(font, 20), command=mai
 start_button.pack(side=tk.BOTTOM, pady=30)
 
 root.mainloop()
+
+"""
+WORKING ON HOVER FUNCTION, REWRITE GAME BOARD DRAWING PROCESS
+SO IT USES INFORMATION FROM "game_progression"
+"""
