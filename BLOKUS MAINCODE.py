@@ -437,6 +437,63 @@ def main():
             board.create_text(sqsize * 30 / 36, sqsize * 20 / 36, text="TAKE BACK", font=(font, fontsize), tags="take_back", activefill="white")
             board.create_text(sqsize * 30 / 36, sqsize * 22 / 36, text="QUIT GAME", font=(font, fontsize), tags="quit", activefill="white")
 
+        def hover(event=None):
+            board.delete("all")
+            draw()
+            if event.x > sqsize / 3 * 2 or event.y > sqsize / 3 * 2:
+                return None
+            else:
+                if selected_piece is not None:
+                    grid = [[0 for _ in range(20)] for _ in range(20)]
+                    col = int(event.x / (sqsize / 30))
+                    row = int(event.y / (sqsize / 30))
+
+                    hover_color = color[turn]
+
+                    if mirrored is True:
+                        for x, y in piece_rotations[selected_piece][rotate_counter]:
+                            row_i = row + y
+                            col_i = col - x
+                            if row_i < 0 or row_i > 19 or col_i < 0 or col_i > 19:
+                                return None
+
+                    else:
+                        for x, y in piece_rotations[selected_piece][rotate_counter]:
+                            row_i = row + y
+                            col_i = col + x
+                            if row_i < 0 or row_i > 19 or col_i < 0 or col_i > 19:
+                                return None
+
+                    if turn == 1:
+                        hover_color = "cadetblue3"
+                    elif turn == 2:
+                        hover_color = "lightgoldenrod1"
+                    elif turn == 3:
+                        hover_color = "coral2"
+                    else:
+                        hover_color = "seagreen2"
+
+                    if mirrored is True:
+                        for x, y in piece_rotations[selected_piece][rotate_counter]:
+                            row_i = row + y
+                            col_i = col - x
+                            grid[row_i][col_i] = turn
+
+                    else:
+                        for x, y in piece_rotations[selected_piece][rotate_counter]:
+                            row_i = row + y
+                            col_i = col + x
+                            grid[row_i][col_i] = turn
+                    for r in range(20):
+                        for c in range(20):
+                            if grid[r][c] == turn:
+                                board.create_rectangle(c * sqsize / 30, r * sqsize / 30,
+                                                       c * sqsize / 30 + sqsize / 30,
+                                                       r * sqsize / 30 + sqsize / 30,
+                                                       fill=hover_color, tags="board", outline=outline)
+                else:
+                    return None
+
         draw_scoreboard()
         draw_buttons()
         draw_pb()
@@ -444,6 +501,7 @@ def main():
         # draw_array_rb()
 
         board.bind("<Button-1>", draw_in_pb)
+        board.bind("<Motion>", hover)
         game.bind("<p>", print_gameboard)
         game.bind("<w>", rotate)
         game.bind("<e>", mirror_piece)
