@@ -532,13 +532,22 @@ def main():
                     if row_i < 0 or row_i > 19 or col_i < 0 or col_i > 19:
                         print("CAN NOT BE PLACED IN THE BOARD! TRY AGAIN!")
                         return None
-
+                    if gameboard[row_i][col_i] == 0 or gameboard[row_i][col_i] == -1 or gameboard[row_i][col_i] == -2 or gameboard[row_i][col_i] == -3 or gameboard[row_i][col_i] == -4:
+                        print("next")
+                    else:
+                        print("CAN NOT OVERLAP WITH OTHER PIECES! TRY AGAIN!")
+                        return None
             else:
                 for x, y in piece_rotations[selected_piece][rotate_counter]:
                     row_i = row + y
                     col_i = col + x
                     if row_i < 0 or row_i > 19 or col_i < 0 or col_i > 19:
                         print("CAN NOT BE PLACED IN THE BOARD! TRY AGAIN!")
+                        return None
+                    if gameboard[row_i][col_i] == 0 or gameboard[row_i][col_i] == -1 or gameboard[row_i][col_i] == -2 or gameboard[row_i][col_i] == -3 or gameboard[row_i][col_i] == -4:
+                        print("next")
+                    else:
+                        print("CAN NOT OVERLAP WITH OTHER PIECES! TRY AGAIN!")
                         return None
 
             if mirrored is True:
