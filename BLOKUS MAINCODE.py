@@ -83,7 +83,6 @@ font = "Cooper Black"
 outline = "slateblue4"
 color = ["white", "blue", "yellow", "red", "green"]
 turn = 1
-
 score = 0
 
 score_b = 0
@@ -185,14 +184,35 @@ def main():
 
         # draws the piece with the provided information from the function below
         def draw_piece(piece_number, x, y, piece_size, piece):
-            for cell in piece:
-                cell_x, cell_y = cell
-                board.create_rectangle(
-                    x + cell_x * piece_size, y + cell_y * piece_size,
-                    x + (cell_x + 1) * piece_size, y + (cell_y + 1) * piece_size,
-                    fill=color[turn], outline=outline, tags="piece"
-                )
-                # print(piece_numbers[piece_number])
+            if game_progression:
+                for cell in piece:
+                    cell_x, cell_y = cell
+                    board.create_rectangle(
+                        x + cell_x * piece_size, y + cell_y * piece_size,
+                        x + (cell_x + 1) * piece_size, y + (cell_y + 1) * piece_size,
+                        fill=color[turn], outline=outline, tags="piece"
+                    )
+                for t in range(len(game_progression)):
+                    if t % 4 + 1 == turn:
+                        if game_progression[t][0] == piece_number and game_progression[t][3] == color[turn]:
+                            for cell in piece:
+                                cell_x, cell_y = cell
+                                board.create_rectangle(
+                                    x + cell_x * piece_size, y + cell_y * piece_size,
+                                    x + (cell_x + 1) * piece_size, y + (cell_y + 1) * piece_size,
+                                    fill="gray60", outline=outline
+                            )
+                    else:
+                        continue
+            else:
+                for cell in piece:
+                    cell_x, cell_y = cell
+                    board.create_rectangle(
+                        x + cell_x * piece_size, y + cell_y * piece_size,
+                        x + (cell_x + 1) * piece_size, y + (cell_y + 1) * piece_size,
+                        fill=color[turn], outline=outline, tags="piece"
+                    )
+                    # print(piece_numbers[piece_number])
 
         # sorts every piece into the grid and calls the draw function immediately after
         for piece_number, piece in enumerate(pieces):
@@ -282,6 +302,13 @@ def main():
                                 selected_piece = col + 7
                         else:
                             selected_piece = col
+                if game_progression:
+                    for t in range(len(game_progression)):
+                        if t % 4 + 1 == turn:
+                            if game_progression[t][0] == selected_piece and game_progression[t][3] == color[turn]:
+                                selected_piece = None
+                                draw()
+                                return None
                 draw()
                 return selected_piece
 
@@ -448,8 +475,6 @@ def main():
                     col = int(event.x / (sqsize / 30))
                     row = int(event.y / (sqsize / 30))
 
-                    hover_color = color[turn]
-
                     if mirrored is True:
                         for x, y in piece_rotations[selected_piece][rotate_counter]:
                             row_i = row + y
@@ -533,7 +558,7 @@ def main():
                         print("CAN NOT BE PLACED IN THE BOARD! TRY AGAIN!")
                         return None
                     if gameboard[row_i][col_i] == 0 or gameboard[row_i][col_i] == -1 or gameboard[row_i][col_i] == -2 or gameboard[row_i][col_i] == -3 or gameboard[row_i][col_i] == -4:
-                        print("next")
+                        continue
                     else:
                         print("CAN NOT OVERLAP WITH OTHER PIECES! TRY AGAIN!")
                         return None
@@ -545,7 +570,7 @@ def main():
                         print("CAN NOT BE PLACED IN THE BOARD! TRY AGAIN!")
                         return None
                     if gameboard[row_i][col_i] == 0 or gameboard[row_i][col_i] == -1 or gameboard[row_i][col_i] == -2 or gameboard[row_i][col_i] == -3 or gameboard[row_i][col_i] == -4:
-                        print("next")
+                        continue
                     else:
                         print("CAN NOT OVERLAP WITH OTHER PIECES! TRY AGAIN!")
                         return None
@@ -637,8 +662,6 @@ def main():
                     placeable = True
 
             if placeable is True:
-                print(row, col)
-
                 game_progression.append([selected_piece, mirrored, rotate_counter, color[turn], row, col])
                 print(game_progression)
                 selected_piece = None
