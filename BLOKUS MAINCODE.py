@@ -81,7 +81,7 @@ gameboard = [[0 for _ in range(20)] for _ in range(20)]
 
 font = "Cooper Black"
 outline = "slateblue4"
-color = ["white", "blue", "yellow", "red", "green"]
+color = ["white", "blue", "yellow", "red", "green", "cadetblue3", "lightgoldenrod1", "coral2", "seagreen2"]
 turn = 1
 score = 0
 
@@ -162,6 +162,7 @@ def main():
         score_y = 0
         score_r = 0
         score_g = 0
+        valid_corners = 0
 
         piece_size = sqsize / 45
         x_offset, y_offset = int(sqsize * 2 / 45), int(sqsize * 32 / 45)
@@ -181,6 +182,41 @@ def main():
             board.create_line(0, row * piece_size * 5 + sqsize * 2 / 3, sqsize * 7 / 9, row * piece_size * 5 + sqsize * 2 / 3, fill=outline, width=2)
             for column in range(8):
                 board.create_line(column * piece_size * 5, sqsize * 2 / 3, column * piece_size * 5, sqsize, fill=outline, width=2)
+
+        # checks for a valid corner
+        def check_surrounding_corners(valid_corners, x, y):
+            # Define the possible directions for adjacent cells
+            directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+            # Check each corner
+            for dx, dy in [(1, 1), (-1, 1), (-1, -1), (1, -1)]:
+                corner_x, corner_y = x + dx, y + dy
+                counter = 0
+                required_sides = 4
+                # Check if the corner is within the bounds of the board
+                if 20 > corner_x >= 0 and -1 <= corner_y < 20:
+                    if gameboard[corner_y][corner_x] == 0:
+
+                        # Check the adjacent cells for 0
+                        for d_x, d_y in directions:
+                            adjacent_x, adjacent_y = corner_x + d_x, corner_y + d_y
+                            if 20 > adjacent_x >= 0 and -1 <= adjacent_y < 20:
+                                if gameboard[adjacent_y][adjacent_x] != turn:
+                                    # Do something with the corner
+                                    counter += 1
+                                    # print(f"Corner at ({corner_x}, {corner_y}) has a neighboring 0.")
+                                else:
+                                    break
+                            else:
+                                required_sides -= 1
+                                continue
+                            if required_sides == counter:
+                                gameboard[corner_y][corner_x] = -turn
+
+                    else:
+                        continue
+                else:
+                    continue
 
         # draws the piece with the provided information from the function below
         def draw_piece(piece_number, x, y, piece_size, piece):
@@ -241,7 +277,17 @@ def main():
                                            row * sqsize / 30 + sqsize / 30, fill="green", tags="board", outline=outline)
                     score_g += 1
                 else:
-                    board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30, row * sqsize / 30 + sqsize / 30, fill="gray80", tags="board", outline=outline)
+                    board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30, row * sqsize / 30 + sqsize / 30,
+                                           fill="gray80", tags="board", outline=outline)
+
+                if gameboard[row][column] <= -1:
+                    if gameboard[row][column] == -turn:
+                        continue
+                    else:
+                        gameboard[row][column] = 0
+
+                if gameboard[row][column] == turn:
+                    check_surrounding_corners(valid_corners, column, row)
 
         # defaults every corner to the color index for its determined piece
         if gameboard[19][0] == 0:
@@ -253,11 +299,19 @@ def main():
         if gameboard[19][19] == 0:
             gameboard[19][19] = -4
 
+        for row in range(20):
+            for column in range(20):
+                if gameboard[row][column] == -turn:
+                    board.create_oval(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30,
+                                           row * sqsize / 30 + sqsize / 30, fill=color[turn + 4], tags="board", outline=outline)
+                    valid_corners += 1
         # P - Keypress returns gameboard as array in console
+
         def print_gameboard(event=None):
             for r in gameboard:
                 print(r, end=" ")
                 print()
+            print(valid_corners)
 
         # draws the scoreboard
         def draw_scoreboard():
@@ -916,6 +970,6 @@ start_button.pack(side=tk.BOTTOM, pady=30)
 root.mainloop()
 
 """
-WORKING ON HOVER FUNCTION, REWRITE GAME BOARD DRAWING PROCESS
-SO IT USES INFORMATION FROM "game_progression"
+WORKING ON PLACING FUNCTIONS THAT CHECK
+IF A PIECE OVERLAPS WITH AT LEAST ONE CORNER (final rule)
 """
