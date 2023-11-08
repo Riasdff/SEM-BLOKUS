@@ -601,8 +601,15 @@ def main():
             col = int(event.x / (sqsize / 30))
             row = int(event.y / (sqsize / 30))
             placeable = False
-
             score = 0
+
+            directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+            counter = 0
+            valid_corners = 0
+            for i in range(20):
+                for j in range(20):
+                    if gameboard[i][j] == -turn:
+                        valid_corners += 1
 
             if mirrored is True:
                 for x, y in piece_rotations[selected_piece][rotate_counter]:
@@ -628,6 +635,73 @@ def main():
                     else:
                         print("CAN NOT OVERLAP WITH OTHER PIECES! TRY AGAIN!")
                         return None
+
+            if mirrored is True:
+                for x, y in piece_rotations[selected_piece][rotate_counter]:
+                    row_l = row + y
+                    col_l = col - x
+                    if gameboard[row_l][col_l] == -turn:
+                        counter += 1
+                    else:
+                        continue
+
+            else:
+                for x, y in piece_rotations[selected_piece][rotate_counter]:
+                    row_l = row + y
+                    col_l = col + x
+                    print(row_l, col_l)
+                    if gameboard[row_l][col_l] == -turn:
+                        counter += 1
+                    else:
+                        continue
+
+            if counter == 0:
+                if mirrored is True:
+                    for x, y in piece_rotations[selected_piece][rotate_counter]:
+                        row_i = row + y
+                        col_i = col - x
+                        gameboard[row_i][col_i] = 0
+
+                else:
+                    for x, y in piece_rotations[selected_piece][rotate_counter]:
+                        row_i = row + y
+                        col_i = col + x
+                        gameboard[row_i][col_i] = 0
+                print("YOU ARE NOT TOUCHING ANY OF YOUR CORNERS! TRY AGAIN!")
+                return None
+
+            # checks if other pieces of yours are being touched
+            if mirrored is True:
+                for x, y in piece_rotations[selected_piece][rotate_counter]:
+                    row_i = row + y
+                    col_i = col - x
+                    # Check the adjacent cells for 0
+                    for d_x, d_y in directions:
+                        adjacent_x, adjacent_y = col_i + d_x, row_i + d_y
+                        if 20 > adjacent_x >= 0 and -1 <= adjacent_y < 20:
+                            if gameboard[adjacent_y][adjacent_x] != turn:
+                                continue
+                            else:
+                                print("YOU ARE COLLIDING WITH ANOTHER PIECE OF YOURS! TRY AGAIN!")
+                                return None
+                        else:
+                            continue
+
+            else:
+                for x, y in piece_rotations[selected_piece][rotate_counter]:
+                    row_i = row + y
+                    col_i = col + x
+                    # Check the adjacent cells for 0
+                    for d_x, d_y in directions:
+                        adjacent_x, adjacent_y = col_i + d_x, row_i + d_y
+                        if 20 > adjacent_x >= 0 and -1 <= adjacent_y < 20:
+                            if gameboard[adjacent_y][adjacent_x] != turn:
+                                continue
+                            else:
+                                print("YOU ARE COLLIDING WITH ANOTHER PIECE OF YOURS! TRY AGAIN!")
+                                return None
+                        else:
+                            continue
 
             if mirrored is True:
                 for x, y in piece_rotations[selected_piece][rotate_counter]:
