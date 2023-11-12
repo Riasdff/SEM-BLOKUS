@@ -1,7 +1,29 @@
 import tkinter as tk
+from tkinter import ttk
 from tkinter import *
 from progression import *
 # import random
+
+def ai_mode(i):
+    if i != "CHOOSE AI DIFFICULTY":
+        start_button.configure(state=NORMAL)
+    else:
+        start_button.configure(state=DISABLED)
+
+def game_mode(i):
+    start_button.configure(state=DISABLED)
+    if i != "Singleplayer":
+        ai_menu.configure(state=DISABLED)
+        start_button.configure(state=NORMAL)
+
+    else:
+        if ai_clicked.get() != "CHOOSE AI DIFFICULTY":
+            ai_menu.configure(state=NORMAL)
+            start_button.configure(state=NORMAL)
+        else:
+            ai_menu.configure(state=NORMAL)
+            start_button.configure(state=DISABLED)
+
 
 piece_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
 pieces = [[(0, 0)],
@@ -96,14 +118,17 @@ mirrored = False
 root = tk.Tk()
 root.title("BLOKUS GAME")
 root.geometry("400x400")
-root.resizable(width=NO, height=NO)
+root.resizable(False, False)
 
-canvas_blue = tk.Canvas(root, width=400, height=400, bg="blue")
-canvas_blue.pack(fill="both", expand=YES)
-canvas = tk.Canvas(canvas_blue, width=400, height=400, bg="lightblue")
+canvas_blue = tk.Canvas(root, width=400, height=400, bg="crimson")
+canvas_blue.pack(fill=BOTH, expand=True)
+canvas = tk.Canvas(canvas_blue, width=400, height=400, bg="coral2")
 canvas.pack(fill="both", expand=YES, pady=10, padx=10)
 
-label1 = tk.Label(canvas, text="BLOKUS", font=(font, 40), bg="lightblue", fg="white")
+style = ttk.Style()
+style.configure("new.TButton", font=(font, 40), background="coral2", foreground="black")
+
+label1 = tk.Label(canvas, text="BLOKUS", font=(font, 40), bg="coral2", fg="black")
 label1.pack(pady=10)
 
 player_option_list = [
@@ -112,22 +137,23 @@ player_option_list = [
 ]
 player_clicked = StringVar()
 player_clicked.set("CHOOSE GAMEMODE")
-player_menu = tk.OptionMenu(canvas, player_clicked, *player_option_list)
-player_menu.configure(width=20, font=(font, 10))
+player_menu = tk.OptionMenu(canvas, player_clicked, *player_option_list, command=game_mode)
+player_menu.configure(width=20, font=(font, 10), bg=color[6], activebackground=color[6])
 player_menu.pack(side=tk.TOP, fill="none", padx=10, pady=10)
 
 ai_option_list = [
-    "NO AI (if not 1P)",
     "AI RANDOM",
-    "AI LEVEL 1"
+    "AI LEVEL 1",
+    "AI LEVEL 2"
 ]
 ai_clicked = StringVar()
 ai_clicked.set("CHOOSE AI DIFFICULTY")
-ai_menu = tk.OptionMenu(canvas, ai_clicked, *ai_option_list)
-ai_menu.configure(width=20, font=(font, 10))
+ai_menu = tk.OptionMenu(canvas, ai_clicked, *ai_option_list, command=ai_mode)
+ai_menu.configure(width=20, font=(font, 10), state=DISABLED, bg=color[6], activebackground=color[6])
 ai_menu.pack(side=tk.TOP, fill="none", padx=10, pady=10)
 
-chaos_mode_checkbox = tk.Checkbutton(canvas, text="CHAOS MODE", font=(font, 10), state=DISABLED)
+chaos_selected = IntVar()
+chaos_mode_checkbox = tk.Checkbutton(canvas, text="CHAOS MODE", font=(font, 10), bg=color[6], variable=chaos_selected)
 chaos_mode_checkbox.pack(side=tk.TOP, pady=10)
 
 
@@ -475,6 +501,7 @@ def main():
             if selected_piece is not None:
                 board.delete("all")
                 draw()
+                hover(event)
             else:
                 return None
 
@@ -488,6 +515,7 @@ def main():
             if selected_piece is not None:
                 board.delete("all")
                 draw()
+                hover(event)
             else:
                 return None
 
@@ -498,11 +526,13 @@ def main():
                 mirrored = True
                 board.delete("all")
                 draw()
+                hover(event)
                 return mirrored
             else:
                 mirrored = False
                 board.delete("all")
                 draw()
+                hover(event)
                 return mirrored
 
         # draws the buttons with text
@@ -1038,8 +1068,10 @@ def main():
     game.mainloop()
 
 
-start_button = tk.Button(canvas, text="START GAME", font=(font, 20), command=main)
+start_button = tk.Button(canvas, text="START GAME", font=(font, 25), command=main, width=12, state=DISABLED)
 start_button.pack(side=tk.BOTTOM, pady=30)
+
+root.bind("<o>", lambda event: print(chaos_selected.get()))
 
 root.mainloop()
 
