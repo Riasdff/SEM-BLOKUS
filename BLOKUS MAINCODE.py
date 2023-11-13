@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 from progression import *
-# import random
+import random
 
 def ai_mode(i):
     if i != "CHOOSE AI DIFFICULTY":
@@ -25,7 +25,8 @@ def game_mode(i):
             start_button.configure(state=DISABLED)
 
 
-piece_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+piece_numbers_ai_y = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+piece_numbers_ai_g = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
 pieces = [[(0, 0)],
           [(0, 0), [1, 0]],
           [(0, 0), [-1, 0], [1, 0]],
@@ -167,6 +168,294 @@ def main():
     board.grid(row=0, column=0, sticky=NW)
     board.pack(side=TOP, fill=BOTH, expand=YES)
 
+    def ai_place(ai_x, ai_y, ai_mirrored, ai_selected_piece, ai_rotation):
+        global turn, color, score
+        if ai_selected_piece is not None:
+
+            col = ai_x
+            row = ai_y
+            placeable = False
+            score = 0
+
+            directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+            counter = 0
+            valid_corners = 0
+            for i in range(20):
+                for j in range(20):
+                    if gameboard[i][j] == -turn:
+                        valid_corners += 1
+
+            if ai_mirrored is True:
+                for x, y in piece_rotations[ai_selected_piece][ai_rotation]:
+                    row_i = row + y
+                    col_i = col - x
+                    if row_i < 0 or row_i > 19 or col_i < 0 or col_i > 19:
+                        print("CAN NOT BE PLACED IN THE BOARD! TRY AGAIN!")
+                        return None
+                    if gameboard[row_i][col_i] == 0 or gameboard[row_i][col_i] == -1 or gameboard[row_i][
+                        col_i] == -2 or \
+                            gameboard[row_i][col_i] == -3 or gameboard[row_i][col_i] == -4:
+                        continue
+                    else:
+                        print("CAN NOT OVERLAP WITH OTHER PIECES! TRY AGAIN!")
+                        return None
+            else:
+                for x, y in piece_rotations[ai_selected_piece][ai_rotation]:
+                    row_i = row + y
+                    col_i = col + x
+                    if row_i < 0 or row_i > 19 or col_i < 0 or col_i > 19:
+                        print("CAN NOT BE PLACED IN THE BOARD! TRY AGAIN!")
+                        return None
+                    if gameboard[row_i][col_i] == 0 or gameboard[row_i][col_i] == -1 or gameboard[row_i][
+                        col_i] == -2 or \
+                            gameboard[row_i][col_i] == -3 or gameboard[row_i][col_i] == -4:
+                        continue
+                    else:
+                        print("CAN NOT OVERLAP WITH OTHER PIECES! TRY AGAIN!")
+                        return None
+
+            if ai_mirrored is True:
+                for x, y in piece_rotations[ai_selected_piece][ai_rotation]:
+                    row_l = row + y
+                    col_l = col - x
+                    if gameboard[row_l][col_l] == -turn:
+                        counter += 1
+                    else:
+                        continue
+
+            else:
+                for x, y in piece_rotations[ai_selected_piece][ai_rotation]:
+                    row_l = row + y
+                    col_l = col + x
+                    print(row_l, col_l)
+                    if gameboard[row_l][col_l] == -turn:
+                        counter += 1
+                    else:
+                        continue
+
+            if counter == 0:
+                if ai_mirrored is True:
+                    for x, y in piece_rotations[ai_selected_piece][ai_rotation]:
+                        row_i = row + y
+                        col_i = col - x
+                        gameboard[row_i][col_i] = 0
+
+                else:
+                    for x, y in piece_rotations[ai_selected_piece][ai_rotation]:
+                        row_i = row + y
+                        col_i = col + x
+                        gameboard[row_i][col_i] = 0
+                print("YOU ARE NOT TOUCHING ANY OF YOUR CORNERS! TRY AGAIN!")
+                return None
+
+            # checks if other pieces of yours are being touched
+            if ai_mirrored is True:
+                for x, y in piece_rotations[ai_selected_piece][ai_rotation]:
+                    row_i = row + y
+                    col_i = col - x
+                    # Check the adjacent cells for 0
+                    for d_x, d_y in directions:
+                        adjacent_x, adjacent_y = col_i + d_x, row_i + d_y
+                        if 20 > adjacent_x >= 0 and -1 <= adjacent_y < 20:
+                            if gameboard[adjacent_y][adjacent_x] != turn:
+                                continue
+                            else:
+                                print("YOU ARE COLLIDING WITH ANOTHER PIECE OF YOURS! TRY AGAIN!")
+                                return None
+                        else:
+                            continue
+
+            else:
+                for x, y in piece_rotations[ai_selected_piece][ai_rotation]:
+                    row_i = row + y
+                    col_i = col + x
+                    # Check the adjacent cells for 0
+                    for d_x, d_y in directions:
+                        adjacent_x, adjacent_y = col_i + d_x, row_i + d_y
+                        if 20 > adjacent_x >= 0 and -1 <= adjacent_y < 20:
+                            if gameboard[adjacent_y][adjacent_x] != turn:
+                                continue
+                            else:
+                                print("YOU ARE COLLIDING WITH ANOTHER PIECE OF YOURS! TRY AGAIN!")
+                                return None
+                        else:
+                            continue
+
+            if ai_mirrored is True:
+                for x, y in piece_rotations[ai_selected_piece][ai_rotation]:
+                    row_i = row + y
+                    col_i = col - x
+                    gameboard[row_i][col_i] = turn
+
+            else:
+                for x, y in piece_rotations[ai_selected_piece][ai_rotation]:
+                    row_i = row + y
+                    col_i = col + x
+                    gameboard[row_i][col_i] = turn
+
+            if turn == 1:
+                if gameboard[19][0] == -1:
+                    if ai_mirrored is True:
+                        for x, y in piece_rotations[ai_selected_piece][ai_rotation]:
+                            row_i = row + y
+                            col_i = col - x
+                            gameboard[row_i][col_i] = 0
+
+                    else:
+                        for x, y in piece_rotations[ai_selected_piece][ai_rotation]:
+                            row_i = row + y
+                            col_i = col + x
+                            gameboard[row_i][col_i] = 0
+
+                    score = 0
+                    print("INVALID FIRST MOVE! TRY AGAIN!")
+                    return None
+                else:
+                    placeable = True
+            if turn == 2:
+                if gameboard[0][0] == -2:
+                    if ai_mirrored is True:
+                        for x, y in piece_rotations[ai_selected_piece][ai_rotation]:
+                            row_i = row + y
+                            col_i = col - x
+                            gameboard[row_i][col_i] = 0
+
+                    else:
+                        for x, y in piece_rotations[ai_selected_piece][ai_rotation]:
+                            row_i = row + y
+                            col_i = col + x
+                            gameboard[row_i][col_i] = 0
+                    score = 0
+                    print("INVALID FIRST MOVE! TRY AGAIN!")
+                    return None
+                else:
+                    placeable = True
+            if turn == 3:
+                if gameboard[0][19] == -3:
+                    if ai_mirrored is True:
+                        for x, y in piece_rotations[ai_selected_piece][ai_rotation]:
+                            row_i = row + y
+                            col_i = col - x
+                            gameboard[row_i][col_i] = 0
+
+                    else:
+                        for x, y in piece_rotations[ai_selected_piece][ai_rotation]:
+                            row_i = row + y
+                            col_i = col + x
+                            gameboard[row_i][col_i] = 0
+                    score = 0
+                    print("INVALID FIRST MOVE! TRY AGAIN!")
+                    return None
+                else:
+                    placeable = True
+            if turn == 4:
+                if gameboard[19][19] == -4:
+                    if ai_mirrored is True:
+                        for x, y in piece_rotations[ai_selected_piece][ai_rotation]:
+                            row_i = row + y
+                            col_i = col - x
+                            gameboard[row_i][col_i] = 0
+
+                    else:
+                        for x, y in piece_rotations[ai_selected_piece][ai_rotation]:
+                            row_i = row + y
+                            col_i = col + x
+                            gameboard[row_i][col_i] = 0
+                    score = 0
+                    print("INVALID FIRST MOVE! TRY AGAIN!")
+                    return None
+                else:
+                    placeable = True
+
+            if placeable is True:
+                game_progression.append([ai_selected_piece, ai_mirrored, ai_rotation, color[turn], row, col])
+                print(game_progression)
+                selected_piece = None
+                rotate_counter = 0
+                mirrored = False
+                scoreboard(score)
+                draw()
+                turn += 1
+                if turn > 4:
+                    turn = 1
+                canvas.delete("all")
+                draw()
+        else:
+            return None
+
+    def ai_turn():
+        global turn
+        if turn == 2 or turn == 4:
+            if player_clicked.get() == "Singleplayer":
+                if ai_clicked.get() == "AI RANDOM":
+                    print("I am here beep boop")
+                    if turn == 2 or turn == 4:
+                        while turn == 2 or turn == 4:
+                            ai_selected_piece = piece_numbers_ai_y.index(random.randint(1, 21))
+                            ai_mirrored = random.randint(0, 1)
+                            ai_rotate_counter = random.randint(0, 3)
+                            checked = []
+                            if turn == 2:
+                                if len(game_progression) < 4:
+                                    ai_col = random.randint(0, 2)
+                                    ai_row = random.randint(0, 2)
+                                    checking = [ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter]
+                                    for check in range(len(checked)):
+                                        if check == checking:
+                                            continue
+                                    ai_place(ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter)
+                                    checked.append([ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter])
+                                elif 4 < len(game_progression) < 20:
+                                    ai_col = random.randint(0, 10)
+                                    ai_row = random.randint(0, 10)
+                                    checking = [ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter]
+                                    for check in range(len(checked)):
+                                        if check == checking:
+                                            continue
+                                    ai_place(ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter)
+                                    checked.append([ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter])
+                                else:
+                                    ai_col = random.randint(0, 17)
+                                    ai_row = random.randint(0, 17)
+                                    checking = [ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter]
+                                    for check in range(len(checked)):
+                                        if check == checking:
+                                            continue
+                                    ai_place(ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter)
+                                    checked.append([ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter])
+                            else:
+                                if len(game_progression) < 4:
+                                    ai_col = random.randint(17, 19)
+                                    ai_row = random.randint(17, 19)
+                                    checking = [ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter]
+                                    for check in range(len(checked)):
+                                        if check == checking:
+                                            continue
+                                    ai_place(ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter)
+                                    checked.append([ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter])
+                                elif 4 < len(game_progression) < 20:
+                                    ai_col = random.randint(10, 19)
+                                    ai_row = random.randint(10, 19)
+                                    checking = [ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter]
+                                    for check in range(len(checked)):
+                                        if check == checking:
+                                            continue
+                                    ai_place(ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter)
+                                    checked.append([ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter])
+                                else:
+                                    ai_col = random.randint(2, 19)
+                                    ai_row = random.randint(2, 19)
+                                    checking = [ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter]
+                                    for check in range(len(checked)):
+                                        if check == checking:
+                                            continue
+                                    ai_place(ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter)
+                                    checked.append([ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter])
+                            print(checked)
+                            if len(checked) > 100:
+                                turn += 1
+                                return None
+
     def scoreboard(points):
         global score_y, score_b, score_r, score_g, turn, score
         if turn == 4:
@@ -274,7 +563,6 @@ def main():
                         x + (cell_x + 1) * piece_size, y + (cell_y + 1) * piece_size,
                         fill=color[turn], outline=outline, tags="piece"
                     )
-                    # print(piece_numbers[piece_number])
 
         # sorts every piece into the grid and calls the draw function immediately after
         for piece_number, piece in enumerate(pieces):
@@ -623,7 +911,7 @@ def main():
 
     # Click - left mouse button press checks if a piece has been selected,
     # if it placeable and if so draw it on the gameboard
-    def on_place(event):
+    def on_place(event=None):
         global turn, selected_piece, rotate_counter, mirrored, color, score
         if selected_piece is not None:
             sqsize = min(int(game.winfo_width()), int(game.winfo_height()))
@@ -832,11 +1120,13 @@ def main():
                     turn = 1
                 canvas.delete("all")
                 draw()
+                if turn == 2 or turn == 4:
+                    ai_turn()
         else:
             return None
 
     # CANVAS BUTTON - left mouse button click skips turn manually
-    def skip_turn(event):
+    def skip_turn(event=None):
         global turn, selected_piece, mirrored, rotate_counter
         turn += 1
         if turn > 4:
@@ -848,9 +1138,11 @@ def main():
         rotate_counter = 0
         print(game_progression)
         draw()
+        if turn == 2 or turn == 4:
+            ai_turn()
 
     # CANVAS BUTTON - left mouse button click takes back one move
-    def take_back(event):
+    def take_back(event=None):
         global turn, selected_piece, rotate_counter, mirrored, score
         if not game_progression:
             return None
@@ -922,7 +1214,9 @@ def main():
         mirrored = False
         canvas.delete("all")
         draw()
-        return selected_piece, rotate_counter, mirrored
+        if turn == 2 or turn == 4:
+            turn -= 1
+            game_progression.pop()
 
     # CANVAS BUTTON - left mouse button click opens rules menu with all the important information to play
     def rules_menu(event):
@@ -1076,6 +1370,6 @@ root.bind("<o>", lambda event: print(chaos_selected.get()))
 root.mainloop()
 
 """
-WORKING ON PLACING FUNCTIONS THAT CHECK
-IF A PIECE OVERLAPS WITH AT LEAST ONE CORNER (final rule)
+WORKING ON THE RANDOM AI SO IT DOES NOT
+REUSE PIECES IT ALREADY USED.
 """
