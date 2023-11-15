@@ -4,8 +4,8 @@ from tkinter import *
 from progression import *
 import random
 
-piece_numbers_ai_y = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
-piece_numbers_ai_g = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+piece_numbers_ai_y = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+piece_numbers_ai_g = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
 pieces = [[(0, 0)],
           [(0, 0), [1, 0]],
           [(0, 0), [-1, 0], [1, 0]],
@@ -390,10 +390,27 @@ def start_window():
                     if ai_clicked.get() == "AI RANDOM":
                         if turn == 2 or turn == 4:
                             while turn == 2 or turn == 4:
-                                ai_selected_piece = piece_numbers_ai_y.index(random.randint(1, 21))
+                                if turn == 2:
+                                    if not piece_numbers_ai_y:
+                                        turn += 1
+                                        print("no more pieces left for yellow")
+                                        board.delete("all")
+                                        draw()
+                                        return None
+                                    ai_selected_piece = random.choice(piece_numbers_ai_y)
+                                else:
+                                    if not piece_numbers_ai_g:
+                                        turn = 1
+                                        print("no more pieces left for green")
+                                        board.delete("all")
+                                        draw()
+                                        return None
+                                    ai_selected_piece = random.choice(piece_numbers_ai_g)
                                 ai_mirrored = random.randint(0, 1)
                                 ai_rotate_counter = random.randint(0, 3)
                                 if turn == 2:
+                                    if ai_selected_piece not in piece_numbers_ai_y:
+                                        continue
                                     if len(game_progression) < 4:
                                         ai_col = random.randint(0, 2)
                                         ai_row = random.randint(0, 2)
@@ -402,6 +419,8 @@ def start_window():
                                             if check == checking:
                                                 continue
                                         ai_place(ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter)
+                                        if turn != 2:
+                                            piece_numbers_ai_y.remove(ai_selected_piece)
                                         checked.append([ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter])
                                     elif 4 < len(game_progression) < 20:
                                         ai_col = random.randint(0, 10)
@@ -411,6 +430,8 @@ def start_window():
                                             if check == checking:
                                                 continue
                                         ai_place(ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter)
+                                        if turn != 2:
+                                            piece_numbers_ai_y.remove(ai_selected_piece)
                                         checked.append([ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter])
                                     else:
                                         ai_col = random.randint(0, 17)
@@ -420,8 +441,12 @@ def start_window():
                                             if check == checking:
                                                 continue
                                         ai_place(ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter)
+                                        if turn != 2:
+                                            piece_numbers_ai_y.remove(ai_selected_piece)
                                         checked.append([ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter])
                                 else:
+                                    if ai_selected_piece not in piece_numbers_ai_g:
+                                        continue
                                     if len(game_progression) < 4:
                                         ai_col = random.randint(17, 19)
                                         ai_row = random.randint(17, 19)
@@ -430,6 +455,8 @@ def start_window():
                                             if check == checking:
                                                 continue
                                         ai_place(ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter)
+                                        if turn != 4:
+                                            piece_numbers_ai_g.remove(ai_selected_piece)
                                         checked.append([ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter])
                                     elif 4 < len(game_progression) < 20:
                                         ai_col = random.randint(10, 19)
@@ -439,6 +466,8 @@ def start_window():
                                             if check == checking:
                                                 continue
                                         ai_place(ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter)
+                                        if turn != 4:
+                                            piece_numbers_ai_g.remove(ai_selected_piece)
                                         checked.append([ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter])
                                     else:
                                         ai_col = random.randint(2, 19)
@@ -448,9 +477,11 @@ def start_window():
                                             if check == checking:
                                                 continue
                                         ai_place(ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter)
+                                        if turn != 4:
+                                            piece_numbers_ai_g.remove(ai_selected_piece)
                                         checked.append([ai_col, ai_row, ai_mirrored, ai_selected_piece, ai_rotate_counter])
 
-                                if len(checked) > 500:
+                                if len(checked) > 1000:
                                     game_progression.append([-1, f"TURN SKIPPED BY AI: <{color[turn]}> "])
                                     turn += 1
                                     board.delete("all")
@@ -627,6 +658,7 @@ def start_window():
                     print(r, end=" ")
                     print()
                 print(valid_corners)
+                print(selected_piece)
 
             # draws the scoreboard
             def draw_scoreboard():
@@ -1215,9 +1247,14 @@ def start_window():
             mirrored = False
             canvas.delete("all")
             draw()
-            if turn == 2 or turn == 4:
-                turn -= 1
-                game_progression.pop()
+            if player_clicked.get() == "Singleplayer":
+                if turn == 2 or turn == 4:
+                    take_back()
+                    selected_piece = None
+                    rotate_counter = 0
+                    mirrored = False
+                    board.delete("all")
+                    draw()
 
         # CANVAS BUTTON - left mouse button click opens rules menu with all the important information to play
         def rules_menu(event):
@@ -1347,7 +1384,7 @@ def start_window():
 
         # CANVAS BUTTON - left mouse button click ends the application
         def quit(event):
-            global gameboard, game_progression, turn, selected_piece, mirrored, score_y, score_r, score_g, score_b
+            global gameboard, game_progression, turn, selected_piece, mirrored, score_y, score_r, score_g, score_b, piece_numbers_ai_y, piece_numbers_ai_g
             game.withdraw()
             end_window = tk.Tk()
             end_window.geometry("400x500")
@@ -1404,7 +1441,7 @@ def start_window():
                     win = "GREEN WON!"
 
             def play_again():
-                global gameboard, game_progression, turn, selected_piece, mirrored, score_y, score_r, score_g, score_b
+                global gameboard, game_progression, turn, selected_piece, mirrored, score_y, score_r, score_g, score_b, piece_numbers_ai_y, piece_numbers_ai_g
                 gameboard = [[0 for _ in range(20)] for _ in range(20)]
                 game_progression = []
                 turn = 1
@@ -1412,6 +1449,8 @@ def start_window():
                 score_y = 0
                 score_r = 0
                 score_g = 0
+                piece_numbers_ai_y = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+                piece_numbers_ai_g = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
                 selected_piece = None
                 mirrored = False
                 player_clicked.set("CHOOSE GAMEMODE")
@@ -1423,7 +1462,6 @@ def start_window():
                 root.destroy()
                 game.destroy()
                 end_window.destroy()
-
 
             for row in range(20):
                 for column in range(20):
@@ -1477,6 +1515,7 @@ def start_window():
     root.bind("<o>", lambda event: print(chaos_selected.get()))
 
     root.mainloop()
+
 
 start_window()
 """
