@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import *
 from progression import *
 import random
+from copy import deepcopy
 
 piece_numbers_ai_y = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
 piece_numbers_ai_g = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
@@ -78,6 +79,7 @@ pieces_dictionary = {"one": [(0, 0)],
 
 review_board = [[0 for _ in range(5)] for _ in range(5)]
 gameboard = [[0 for _ in range(20)] for _ in range(20)]
+game_progression = []
 
 font = "Cooper Black"
 outline = "slateblue4"
@@ -166,6 +168,35 @@ def start_window():
         board = tk.Canvas(game, width=900, height=900, bg="lightcoral")
         board.grid(row=0, column=0, sticky=NW)
         board.pack(side=TOP, fill=BOTH, expand=YES)
+
+        def evaluate():
+            global eval_player, eval_ai
+            eval_player = 0
+            eval_ai = 0
+            ais_val = (2, 4, -2, -4)
+            players_val = (1, 3, -1, -3)
+            for i in range(20):
+                for j in range(20):
+                    if gameboard[i][j] == players_val[0] or gameboard[i][j] == players_val[1]:
+                        if 5 < i < 13 and 5 < j < 13:
+                            eval_player += 2
+                        elif 2 < i < 17 and 2 < j < 17 and 5 > i > 13 and 5 > j > 13:
+                            eval_player += 1.5
+                        else:
+                            eval_player += 1
+                    if gameboard[i][j] == players_val[2] or gameboard[i][j] == players_val[3]:
+                        eval_player += 0.2
+
+                    if gameboard[i][j] == ais_val[0] or gameboard[i][j] == ais_val[1]:
+                        if 5 < i < 13 and 5 < j < 13:
+                            eval_ai += 2
+                        elif 2 < i < 17 and 2 < j < 17 and 5 > i > 13 and 5 > j > 13:
+                            eval_ai += 1.5
+                        else:
+                            eval_ai += 1
+                    if gameboard[i][j] == ais_val[2] or gameboard[i][j] == ais_val[3]:
+                        eval_ai += 0.2
+            return eval_player - eval_ai
 
         def ai_place(ai_x, ai_y, ai_mirrored, ai_selected_piece, ai_rotation):
             global turn, color, score
@@ -484,6 +515,8 @@ def start_window():
                                 if len(checked) > 1000:
                                     game_progression.append([-1, f"TURN SKIPPED BY AI: <{color[turn]}> "])
                                     turn += 1
+                                    if turn > 4:
+                                        turn = 1
                                     board.delete("all")
                                     draw()
                                     return None
@@ -626,11 +659,12 @@ def start_window():
                         board.create_rectangle(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30, row * sqsize / 30 + sqsize / 30,
                                                fill="gray80", tags="board", outline=outline)
 
-                    if gameboard[row][column] <= -1:
+                    # Removes the valid corners from array except the one who is in turn
+                    """if gameboard[row][column] <= -1:
                         if gameboard[row][column] == -turn:
                             continue
                         else:
-                            gameboard[row][column] = 0
+                            gameboard[row][column] = 0"""
 
                     if gameboard[row][column] == turn:
                         check_surrounding_corners(valid_corners, column, row)
@@ -652,13 +686,14 @@ def start_window():
                                                row * sqsize / 30 + sqsize / 30, fill=color[turn + 4], tags="board", outline=outline)
                         valid_corners += 1
             # P - Keypress returns gameboard as array in console
-
             def print_gameboard(event=None):
                 for r in gameboard:
                     print(r, end=" ")
                     print()
                 print(valid_corners)
                 print(selected_piece)
+                print(eval_player, eval_ai)
+                print(eval_player - eval_ai)
 
             # draws the scoreboard
             def draw_scoreboard():
@@ -928,6 +963,7 @@ def start_window():
             draw_buttons()
             draw_pb()
             draw_piece_pb()
+            evaluate()
             # draw_array_rb()
 
             board.bind("<Button-1>", draw_in_pb)
