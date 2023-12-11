@@ -431,7 +431,7 @@ def start_window():
                 for c in range(20):
                     if board[r][c] == -turn:
                         corner_coords.append([r, c])
-            print(corner_coords)
+            # print(corner_coords)
             directions = [(-2, -1), (-2, 0), (-2, 1),
                           (-1, -2), (-1, -1), (-1, 0), (-1, 1), (-1, 2),
                           (0, -2), (0, -1), (0, 0), (0, 1), (0, 2),
@@ -795,7 +795,7 @@ def start_window():
                     else:
                         piece_numbers_ai_g.remove(ai_selected_piece)
                     game_progression.append([ai_selected_piece, ai_mirrored, ai_rotation, color[turn], row, col])
-                    print(game_progression)
+                    # print(game_progression)
                     selected_piece = None
                     rotate_counter = 0
                     mirrored = False
@@ -948,20 +948,19 @@ def start_window():
             min_value = math.inf
             best_move = []
             for sp, rc, mi, y, x in moves:
-                print(sp, rc, mi, y, x)
+                # print(sp, rc, mi, y, x)
                 testboard = deepcopy(gameboard)
                 try_place(testboard, sp, rc, mi, y, x)
                 value = evaluate(testboard)
-                print(min_value)
-                print(value)
+                # print(min_value)
+                # print(value)
                 if value < min_value:
                     min_value = value
                     best_move = [sp, rc, mi, y, x]
                 else:
                     continue
-            print(best_move)
+            # print(best_move)
             ai_place(gameboard, best_move[0], best_move[1], best_move[2], best_move[3], best_move[4])
-
 
         def ai_turn_lv1():
             global turn, gameboard
@@ -988,25 +987,55 @@ def start_window():
             bm3 = []
             bm4 = []
             bm5 = []
+            bm6 = []
+            bm7 = []
+            bm8 = []
+            bm9 = []
+            bm10 = []
             val1 = math.inf
             val2 = math.inf
             val3 = math.inf
             val4 = math.inf
+            val5 = math.inf
+            val6 = math.inf
+            val7 = math.inf
+            val8 = math.inf
+            val9 = math.inf
             min_value = math.inf
             for sp, rc, mi, y, x in reversed(moves):
-                print(sp, rc, mi, y, x)
+                # print(sp, rc, mi, y, x)
                 testboard = deepcopy(gameboard)
                 try_place(testboard, sp, rc, mi, y, x)
                 value = evaluate(testboard)
-                print(min_value)
-                print(value)
+                # print(min_value)
+                # print(value)
                 if value < min_value:
                     if value < val1:
                         if value < val2:
                             if value < val3:
                                 if value < val4:
-                                    val4 = value
-                                    bm5 = [sp, rc, mi, y, x]
+                                    if value < val5:
+                                        if value < val6:
+                                            if value < val7:
+                                                if value < val8:
+                                                    if value < val9:
+                                                        val9 = value
+                                                        bm10 = [sp, rc, mi, y, x]
+                                                    else:
+                                                        val8 = value
+                                                        bm9 = [sp, rc, mi, y, x]
+                                                else:
+                                                    val7 = value
+                                                    bm8 = [sp, rc, mi, y, x]
+                                            else:
+                                                val6 = value
+                                                bm7 = [sp, rc, mi, y, x]
+                                        else:
+                                            val5 = value
+                                            bm6 = [sp, rc, mi, y, x]
+                                    else:
+                                        val4 = value
+                                        bm5 = [sp, rc, mi, y, x]
                                 else:
                                     val3 = value
                                     bm4 = [sp, rc, mi, y, x]
@@ -1022,8 +1051,8 @@ def start_window():
                 else:
                     continue
 
-            random_move = random.choice([bm1, bm2, bm3, bm4, bm5])
-            print([bm1, bm2, bm3, bm4, bm5])
+            random_move = random.choice([bm1, bm2, bm3, bm4, bm5, bm6, bm7, bm8, bm9, bm10])
+            print([bm1, bm2, bm3, bm4, bm5, bm6, bm7, bm8, bm9, bm10])
             ai_place(gameboard, random_move[0], random_move[1], random_move[2], random_move[3], random_move[4])
 
         def scoreboard(points):
@@ -1301,12 +1330,6 @@ def start_window():
                     draw()
                     return selected_piece
 
-            # UNUSED FUNCTION
-            def draw_array_rb():
-                for row in review_board:
-                    print(row, end=" ")
-                    print()
-
             # draws the preview board
             def draw_pb():
                 global selected_piece
@@ -1574,7 +1597,7 @@ def start_window():
                         if gameboard[row_i][col_i] == 0 or gameboard[row_i][col_i] == -1 or gameboard[row_i][col_i] == -2 or gameboard[row_i][col_i] == -3 or gameboard[row_i][col_i] == -4:
                             continue
                         else:
-                            print("CAN NOT OVERLAP WITH OTHER PIECES! TRY AGAIN!")
+                            # "CAN NOT OVERLAP WITH OTHER PIECES! TRY AGAIN!")
                             return None
 
                 if mirrored is True:
@@ -1729,7 +1752,7 @@ def start_window():
 
                 if placeable is True:
                     game_progression.append([selected_piece, mirrored, rotate_counter, color[turn], row, col])
-                    print(game_progression)
+                    # print(game_progression)
                     if turn == 1:
                         piece_numbers_player_b.remove(selected_piece)
                     elif turn == 2:
@@ -1769,7 +1792,7 @@ def start_window():
             selected_piece = None
             mirrored = False
             rotate_counter = 0
-            print(game_progression)
+            # print(game_progression)
             draw()
             if player_clicked.get() == "SINGLEPLAYER":
                 if turn == 2 or turn == 4:
@@ -1851,7 +1874,7 @@ def start_window():
             if not game_progression:
                 gameboard[19][0] = -1
 
-            print(game_progression)
+            # print(game_progression)
             scoreboard(score)
             selected_piece = None
             rotate_counter = 0
