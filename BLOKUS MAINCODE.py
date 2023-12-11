@@ -262,7 +262,18 @@ def start_window():
 
     def continue_game():
         if game_progression:
-            main()
+            if player_clicked.get() != "CHOOSE GAMEMODE":
+                if player_clicked.get() == "SINGLEPLAYER":
+                    if ai_clicked.get() != "CHOOSE AI DIFFICULTY":
+                        main()
+                    else:
+                        return
+                else:
+                    main()
+            else:
+                return
+        else:
+            return
 
     root = tk.Tk()
     root.title("BLOKUS GAME")
@@ -274,7 +285,7 @@ def start_window():
     canvas_fg = tk.Canvas(canvas_bg, width=400, height=400, bg=bg_theme)
     canvas_fg.pack(fill="both", expand=TRUE, pady=10, padx=10)
 
-    label1 = tk.Label(canvas_fg, text="BLOKUS", font=(font, 75), bg=bg_theme, fg=theme_colors[0])
+    label1 = tk.Label(canvas_fg, text="BLOKUS", font=(font, 75), bg=bg_theme, fg=fontcolor)
     label1.pack(pady=5)
 
     def draw_start_menu():
@@ -298,7 +309,7 @@ def start_window():
     blue = StringVar()
     blue.set("CHOOSE BLUE COLOR")
     blue_menu = tk.OptionMenu(canvas_fg, blue, *blue_list, command=set_blue)
-    blue_menu.configure(width=25, font=(font, 22), fg="white", bg=bg_theme, activebackground=color[6])
+    blue_menu.configure(width=25, font=(font, 22), fg=fontcolor, bg=bg_theme, activebackground=color[6])
     blue_menu.place(x=120, y=140)
 
     # YELLOW COLORS
@@ -310,7 +321,7 @@ def start_window():
     yellow = StringVar()
     yellow.set("CHOOSE YELLOW COLOR")
     yellow_menu = tk.OptionMenu(canvas_fg, yellow, *yellow_list, command=set_yellow)
-    yellow_menu.configure(width=25, font=(font, 22), fg="white", bg=bg_theme, activebackground=color[6])
+    yellow_menu.configure(width=25, font=(font, 22), fg=fontcolor, bg=bg_theme, activebackground=color[6])
     yellow_menu.place(x=120, y=200)
 
     # RED COLORS
@@ -323,7 +334,7 @@ def start_window():
     red = StringVar()
     red.set("CHOOSE RED COLOR")
     red_menu = tk.OptionMenu(canvas_fg, red, *red_list, command=set_red)
-    red_menu.configure(width=25, font=(font, 22), fg="white", bg=bg_theme, activebackground=color[6])
+    red_menu.configure(width=25, font=(font, 22), fg=fontcolor, bg=bg_theme, activebackground=color[6])
     red_menu.place(x=120, y=260)
 
     # GREEN COLORS
@@ -336,7 +347,7 @@ def start_window():
     green = StringVar()
     green.set("CHOOSE GREEN COLOR")
     green_menu = tk.OptionMenu(canvas_fg, green, *green_list, command=set_green)
-    green_menu.configure(width=25, font=(font, 22), fg="white", bg=bg_theme, activebackground=color[6])
+    green_menu.configure(width=25, font=(font, 22), fg=fontcolor, bg=bg_theme, activebackground=color[6])
     green_menu.place(x=120, y=320)
 
     # PLAYER OPTION LIST
@@ -347,7 +358,7 @@ def start_window():
     player_clicked = StringVar()
     player_clicked.set("CHOOSE GAMEMODE")
     player_menu = tk.OptionMenu(canvas_fg, player_clicked, *player_option_list, command=game_mode)
-    player_menu.configure(width=25, font=(font, 30), fg="white", bg=bg_theme, activebackground=color[6])
+    player_menu.configure(width=25, font=(font, 30), fg=fontcolor, bg=bg_theme, activebackground=color[6])
     player_menu.place(x=50, y=390)
 
     ai_option_list = [
@@ -358,7 +369,7 @@ def start_window():
     ai_clicked = StringVar()
     ai_clicked.set("CHOOSE AI DIFFICULTY")
     ai_menu = tk.OptionMenu(canvas_fg, ai_clicked, *ai_option_list, command=ai_mode)
-    ai_menu.configure(width=25, font=(font, 30), state=DISABLED, fg="white", bg=bg_theme, activebackground=color[6])
+    ai_menu.configure(width=25, font=(font, 30), state=DISABLED, fg=fontcolor, bg=bg_theme, activebackground=color[6])
     ai_menu.place(x=50, y=465)
 
     chaos_selected = IntVar()
@@ -914,7 +925,7 @@ def start_window():
             else:
                 return None
 
-        def ai_turn():
+        def ai_turn_lv2():
             global turn, gameboard
             if turn == 2:
                 if not piece_numbers_ai_y:
@@ -950,6 +961,70 @@ def start_window():
                     continue
             print(best_move)
             ai_place(gameboard, best_move[0], best_move[1], best_move[2], best_move[3], best_move[4])
+
+
+        def ai_turn_lv1():
+            global turn, gameboard
+            if turn == 2:
+                if not piece_numbers_ai_y:
+                    skip_turn()
+                    return
+            elif turn == 4:
+                if not piece_numbers_ai_g:
+                    skip_turn()
+                    return
+
+            moves = get_moves(gameboard)
+            if not moves:
+                if turn == 2:
+                    skip_turn()
+                    return
+                elif turn == 4:
+                    skip_turn()
+                    return
+
+            bm1 = []
+            bm2 = []
+            bm3 = []
+            bm4 = []
+            bm5 = []
+            val1 = math.inf
+            val2 = math.inf
+            val3 = math.inf
+            val4 = math.inf
+            min_value = math.inf
+            for sp, rc, mi, y, x in reversed(moves):
+                print(sp, rc, mi, y, x)
+                testboard = deepcopy(gameboard)
+                try_place(testboard, sp, rc, mi, y, x)
+                value = evaluate(testboard)
+                print(min_value)
+                print(value)
+                if value < min_value:
+                    if value < val1:
+                        if value < val2:
+                            if value < val3:
+                                if value < val4:
+                                    val4 = value
+                                    bm5 = [sp, rc, mi, y, x]
+                                else:
+                                    val3 = value
+                                    bm4 = [sp, rc, mi, y, x]
+                            else:
+                                val2 = value
+                                bm3 = [sp, rc, mi, y, x]
+                        else:
+                            val1 = value
+                            bm2 = [sp, rc, mi, y, x]
+                    else:
+                        min_value = value
+                        bm1 = [sp, rc, mi, y, x]
+                else:
+                    continue
+
+            random_move = random.choice([bm1, bm2, bm3, bm4, bm5])
+            print([bm1, bm2, bm3, bm4, bm5])
+            ai_place(gameboard, random_move[0], random_move[1], random_move[2], random_move[3], random_move[4])
 
         def scoreboard(points):
             global score_y, score_b, score_r, score_g, turn, score
@@ -1035,34 +1110,50 @@ def start_window():
 
             # draws the piece with the provided information from the function below
             def draw_piece(piece_number, x, y, piece_size, piece):
-                if game_progression:
-                    for cell in piece:
-                        cell_x, cell_y = cell
-                        board.create_rectangle(
-                            x + cell_x * piece_size, y + cell_y * piece_size,
-                            x + (cell_x + 1) * piece_size, y + (cell_y + 1) * piece_size,
-                            fill=color[turn], outline=outline, tags="piece"
-                        )
-                    for t in range(len(game_progression)):
-                        if t % 4 + 1 == turn:
-                            if game_progression[t][0] == piece_number and game_progression[t][3] == color[turn]:
-                                for cell in piece:
-                                    cell_x, cell_y = cell
-                                    board.create_rectangle(
-                                        x + cell_x * piece_size, y + cell_y * piece_size,
-                                        x + (cell_x + 1) * piece_size, y + (cell_y + 1) * piece_size,
-                                        fill=bg_theme, outline=outline
-                                )
-                        else:
-                            continue
+                if turn == 1:
+                    if piece_number not in piece_numbers_player_b:
+                        return
+                    else:
+                        for cell in piece:
+                            cell_x, cell_y = cell
+                            board.create_rectangle(
+                                x + cell_x * piece_size, y + cell_y * piece_size,
+                                x + (cell_x + 1) * piece_size, y + (cell_y + 1) * piece_size,
+                                fill=color[turn], outline=outline, tags="piece"
+                            )
+                elif turn == 2:
+                    if piece_number not in piece_numbers_ai_y:
+                        return
+                    else:
+                        for cell in piece:
+                            cell_x, cell_y = cell
+                            board.create_rectangle(
+                                x + cell_x * piece_size, y + cell_y * piece_size,
+                                x + (cell_x + 1) * piece_size, y + (cell_y + 1) * piece_size,
+                                fill=color[turn], outline=outline, tags="piece"
+                            )
+                elif turn == 3:
+                    if piece_number not in piece_numbers_player_r:
+                        return
+                    else:
+                        for cell in piece:
+                            cell_x, cell_y = cell
+                            board.create_rectangle(
+                                x + cell_x * piece_size, y + cell_y * piece_size,
+                                x + (cell_x + 1) * piece_size, y + (cell_y + 1) * piece_size,
+                                fill=color[turn], outline=outline, tags="piece"
+                            )
                 else:
-                    for cell in piece:
-                        cell_x, cell_y = cell
-                        board.create_rectangle(
-                            x + cell_x * piece_size, y + cell_y * piece_size,
-                            x + (cell_x + 1) * piece_size, y + (cell_y + 1) * piece_size,
-                            fill=color[turn], outline=outline, tags="piece"
-                        )
+                    if piece_number not in piece_numbers_ai_g:
+                        return
+                    else:
+                        for cell in piece:
+                            cell_x, cell_y = cell
+                            board.create_rectangle(
+                                x + cell_x * piece_size, y + cell_y * piece_size,
+                                x + (cell_x + 1) * piece_size, y + (cell_y + 1) * piece_size,
+                                fill=color[turn], outline=outline, tags="piece"
+                            )
 
             # sorts every piece into the grid and calls the draw function immediately after
             for piece_number, piece in enumerate(pieces):
@@ -1109,11 +1200,11 @@ def start_window():
                                                outline=outline)
 
                     # Removes the valid corners from array except the one who is in turn
-                    """if gameboard[row][column] <= -1:
+                    if gameboard[row][column] <= -1:
                         if gameboard[row][column] == -turn:
                             continue
                         else:
-                            gameboard[row][column] = 0"""
+                            gameboard[row][column] = 0
 
                     if gameboard[row][column] == turn:
                         check_surrounding_corners(valid_corners, column, row)
@@ -1661,9 +1752,9 @@ def start_window():
                     if player_clicked.get() == "SINGLEPLAYER":
                         if turn == 2 or turn == 4:
                             if ai_clicked.get() == "AI LEVEL 1":
-                                ai_turn()
+                                ai_turn_lv1()
                             elif ai_clicked.get() == "AI LEVEL 2":
-                                minimax(gameboard, 2, -math.inf, math.inf, True)
+                                ai_turn_lv2()
             else:
                 return None
 
@@ -1683,9 +1774,9 @@ def start_window():
             if player_clicked.get() == "SINGLEPLAYER":
                 if turn == 2 or turn == 4:
                     if ai_clicked.get() == "AI LEVEL 1":
-                        ai_turn()
+                        ai_turn_lv1()
                     elif ai_clicked.get() == "AI LEVEL 2":
-                        minimax(gameboard, 2, -math.inf, math.inf, False)
+                        ai_turn_lv2()
 
         def take_back(event=None):
             global turn, selected_piece, rotate_counter, mirrored, score
@@ -1749,6 +1840,14 @@ def start_window():
                     if turn < 1:
                         turn = 4
                     game_progression.pop()
+                    if turn == 1:
+                        piece_numbers_player_b.append(selected_piece)
+                    elif turn == 2:
+                        piece_numbers_ai_y.append(selected_piece)
+                    elif turn == 3:
+                        piece_numbers_player_r.append(selected_piece)
+                    else:
+                        piece_numbers_ai_g.append(selected_piece)
             if not game_progression:
                 gameboard[19][0] = -1
 
@@ -1897,7 +1996,11 @@ def start_window():
 
         # CANVAS BUTTON - left mouse button click ends the application
         def quit(event):
-            global gameboard, game_progression, turn, selected_piece, mirrored, score_y, score_r, score_g, score_b, piece_numbers_ai_y, piece_numbers_ai_g
+            global gameboard, game_progression, turn, selected_piece, mirrored, score_y, score_r, score_g, score_b,\
+                    piece_numbers_ai_y, piece_numbers_ai_g, review_board, bg_theme, BLOCK_COLOR, font, fontcolor, \
+                    outline, color, themes, theme_colors, block_colors, score, moves, corner_coords, possible_moves, \
+                    rotate_counter, scores, BLUE, YELLOW, RED, GREEN, piece_numbers_player_b, piece_numbers_player_r
+
             game.withdraw()
             end_window = tk.Tk()
             end_window.geometry("400x500")
@@ -1956,7 +2059,12 @@ def start_window():
                 global gameboard, game_progression, turn, selected_piece, mirrored, score_y, score_r, score_g, score_b,\
                     piece_numbers_ai_y, piece_numbers_ai_g, review_board, bg_theme, BLOCK_COLOR, font, fontcolor, \
                     outline, color, themes, theme_colors, block_colors, score, moves, corner_coords, possible_moves, \
-                    rotate_counter, scores, BLUE, YELLOW, RED, GREEN
+                    rotate_counter, scores, BLUE, YELLOW, RED, GREEN, piece_numbers_player_b, piece_numbers_player_r
+
+                piece_numbers_player_b = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+                piece_numbers_player_r = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+                piece_numbers_ai_y = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+                piece_numbers_ai_g = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
 
                 review_board = [[0 for _ in range(5)] for _ in range(5)]
                 gameboard = [[0 for _ in range(20)] for _ in range(20)]
@@ -1991,6 +2099,7 @@ def start_window():
                 scores = [score_b, score_y, score_r, score_g]
                 selected_piece = None
                 mirrored = False
+
                 end_window.destroy()
                 game.destroy()
                 root.destroy()
@@ -2024,7 +2133,7 @@ def start_window():
                                                 column * piece_size + 50 + piece_size, row * piece_size + 20 + piece_size,
                                                 fill=BLOCK_COLOR, tags="board", outline=outline)
 
-            screen.create_text(200, 170, font=(font, 30), text=f"GG!\n {win}", fill=fontcolor, width=300, justify="center")
+            screen.create_text(200, 170, font=(font, 30), text=f"GG!\n {win}", fill="GREEN", width=300, justify="center")
 
             close_button = tk.Button(screen, bg=bg_theme, fg=fontcolor, text="CLOSE GAME", font=(font, 25), command=close, width=12, activebackground=color[6])
             close_button.pack(side=tk.BOTTOM, pady=15)
@@ -2048,10 +2157,10 @@ def start_window():
         game.bind("<Configure>", config)
         game.mainloop()
 
-    start_button = tk.Button(canvas_fg, text="START GAME", bg=bg_theme, fg=theme_colors[0], font=(font, 30), command=main, width=12, state=DISABLED, activebackground=color[6])
+    start_button = tk.Button(canvas_fg, text="START GAME", bg=bg_theme, fg=fontcolor, font=(font, 30), command=main, width=12, state=DISABLED, activebackground=color[6])
     start_button.place(x=20, y=625)
 
-    continue_button = tk.Button(canvas_fg, text="CONTINUE", bg=bg_theme, fg=theme_colors[0], font=(font, 30), command=continue_game, width=12, state=NORMAL, activebackground=color[6])
+    continue_button = tk.Button(canvas_fg, text="CONTINUE", bg=bg_theme, fg=fontcolor, font=(font, 30), command=continue_game, width=12, state=NORMAL, activebackground=color[6])
     continue_button.place(x=375, y=625)
 
     canvas_fg.tag_bind("light", "<Button-1>", lambda event: change_canvas_color("white"))
@@ -2064,6 +2173,6 @@ def start_window():
 
 start_window()
 """
-WORKING ON FINALIZING THE LEVEL 1,
-LEVEL 2 AI AND THE CHAOS MODE
+WORKING ON THE CHAOS MODE AND 
+LEVEL 3 AI (LAST FEATURES BEFORE FINALIZING)
 """
