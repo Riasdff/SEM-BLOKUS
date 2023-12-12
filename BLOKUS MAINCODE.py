@@ -3,6 +3,8 @@ from tkinter import *
 from progression import *
 import random
 import math
+import time
+import threading
 from copy import deepcopy
 
 piece_numbers_player_b = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
@@ -386,41 +388,23 @@ def start_window():
         board.grid(row=0, column=0, sticky=NW)
         board.pack(side=TOP, fill=BOTH, expand=YES)
 
-        def minimax(board, depth, alpha, beta, maximizingPlayer):
-            if depth == 0:
-                return evaluate(board)
+        class Timer:
+            def __init__(self, interval, function):
+                self.interval = interval
+                self.function = function
+                self.timer = threading.Timer(self.interval, self.function)
 
-            moves = get_moves(board)
+            def start(self):
+                self.timer.start()
 
-            if maximizingPlayer:
-                value = -math.inf
-                best_move = []
-                for sp, rc, mi, y, x in moves:
-                    b_copy = deepcopy(board)
-                    try_place(b_copy, sp, rc, mi, y, x)
-                    new_score = minimax(b_copy, depth - 1, alpha, beta, False)
-                    if new_score > value:
-                        value = new_score
-                        best_move = [sp, rc, mi, y, x]
-                    alpha = max(alpha, value)
-                    if value >= beta:
-                        break
-                return value
+            def reset(self):
+                # Cancel the current timer and create a new one
+                self.timer.cancel()
+                self.timer = threading.Timer(self.interval, self.function)
+                self.start()
 
-            else:  # Minimizing player
-                value = math.inf
-                best_move = []
-                for sp, rc, mi, y, x in moves:
-                    b_copy = deepcopy(board)
-                    try_place(b_copy, sp, rc, mi, y, x)
-                    new_score = minimax(b_copy, depth - 1, alpha, beta, True)
-                    if new_score < value:
-                        value = new_score
-                        best_move = [sp, rc, mi, y, x]
-                    beta = min(beta, value)
-                    if alpha >= value:
-                        break
-                return value
+            def cancel(self):
+                self.__init__(9999, None)
 
         def get_moves(board):
             global corner_coords, piece_numbers_ai_g, piece_numbers_ai_y, piece_numbers_player_r, piece_numbers_player_b, turn, moves
@@ -466,7 +450,7 @@ def start_window():
                                         moves.append([piece, rotator, mirror, cell_y, cell_x])
                                         move_counter += 1
             # print(moves)
-            print(f"Possible moves: {move_counter}")
+            # print(f"Possible moves: {move_counter}")
             return moves
 
         def evaluate(board):
@@ -804,6 +788,8 @@ def start_window():
                     turn += 1
                     if turn > 4:
                         turn = 1
+                    if get_moves(gameboard) == 0:
+                        skip_turn()
                     board.delete("all")
                     draw()
             else:
@@ -925,14 +911,14 @@ def start_window():
             else:
                 return None
 
-        def ai_turn_lv2():
+        def ai_turn_lv3():
             global turn, gameboard
             if turn == 2:
-                if not piece_numbers_ai_y:
+                if not piece_numbers_ai_y or not get_moves(gameboard):
                     skip_turn()
                     return
             elif turn == 4:
-                if not piece_numbers_ai_g:
+                if not piece_numbers_ai_g or not get_moves(gameboard):
                     skip_turn()
                     return
 
@@ -962,14 +948,14 @@ def start_window():
             # print(best_move)
             ai_place(gameboard, best_move[0], best_move[1], best_move[2], best_move[3], best_move[4])
 
-        def ai_turn_lv1():
+        def ai_turn_lv2():
             global turn, gameboard
             if turn == 2:
-                if not piece_numbers_ai_y:
+                if not piece_numbers_ai_y or not get_moves(gameboard):
                     skip_turn()
                     return
             elif turn == 4:
-                if not piece_numbers_ai_g:
+                if not piece_numbers_ai_g or not get_moves(gameboard):
                     skip_turn()
                     return
 
@@ -1068,10 +1054,14 @@ def start_window():
             score = 0
 
         def reopen_start(event=None):
-            game.withdraw()
+            timer.cancel()
             game.destroy()
             root.destroy()
             start_window()
+
+        def chaos_reset():
+            if chaos_selected.get() == 1:
+                timer.reset()
 
         def draw():
             global score_b, score_y, score_r, score_g, corner_coords
@@ -1772,12 +1762,29 @@ def start_window():
                         turn = 1
                     board.delete("all")
                     draw()
+                    chaos_reset()
                     if player_clicked.get() == "SINGLEPLAYER":
                         if turn == 2 or turn == 4:
                             if ai_clicked.get() == "AI LEVEL 1":
-                                ai_turn_lv1()
+                                move = random.choice([0, 1, 2])
+                                if move == 0:
+                                    if not get_moves(gameboard):
+                                        skip_turn()
+                                    else:
+                                        random_move = random.choice(get_moves(gameboard))
+                                        ai_place(gameboard, random_move[0], random_move[1], random_move[2], random_move[3],
+                                                 random_move[4])
+                                elif move == 1:
+                                    ai_turn_lv2()
+                                else:
+                                    ai_turn_lv3()
                             elif ai_clicked.get() == "AI LEVEL 2":
                                 ai_turn_lv2()
+                            elif ai_clicked.get() == "AI LEVEL 3":
+                                ai_turn_lv3()
+                        else:
+                            if get_moves(gameboard) == 0:
+                                skip_turn()
             else:
                 return None
 
@@ -1794,12 +1801,26 @@ def start_window():
             rotate_counter = 0
             # print(game_progression)
             draw()
+            chaos_reset()
             if player_clicked.get() == "SINGLEPLAYER":
                 if turn == 2 or turn == 4:
                     if ai_clicked.get() == "AI LEVEL 1":
-                        ai_turn_lv1()
+                        move = random.choice([0, 1, 2])
+                        if move == 0:
+                            if not get_moves(gameboard):
+                                skip_turn()
+                            else:
+                                random_move = random.choice(get_moves(gameboard))
+                                ai_place(gameboard, random_move[0], random_move[1], random_move[2], random_move[3],
+                                         random_move[4])
+                        elif move == 1:
+                            ai_turn_lv2()
+                        else:
+                            ai_turn_lv3()
                     elif ai_clicked.get() == "AI LEVEL 2":
                         ai_turn_lv2()
+                    elif ai_clicked.get() == "AI LEVEL 3":
+                        ai_turn_lv3()
 
         def take_back(event=None):
             global turn, selected_piece, rotate_counter, mirrored, score
@@ -1881,6 +1902,7 @@ def start_window():
             mirrored = False
             board.delete("all")
             draw()
+            chaos_reset()
             if player_clicked.get() == "SINGLEPLAYER":
                 if turn == 2 or turn == 4:
                     take_back()
@@ -2024,6 +2046,7 @@ def start_window():
                     outline, color, themes, theme_colors, block_colors, score, moves, corner_coords, possible_moves, \
                     rotate_counter, scores, BLUE, YELLOW, RED, GREEN, piece_numbers_player_b, piece_numbers_player_r
 
+            timer.cancel()
             game.withdraw()
             end_window = tk.Tk()
             end_window.geometry("400x500")
@@ -2168,6 +2191,8 @@ def start_window():
 
         # Calls draw function for the first time
         draw()
+        timer = Timer(5, skip_turn)
+        chaos_reset()
 
         board.tag_bind("menu", "<Button-1>", reopen_start)
         board.tag_bind("board", "<Button-1>", on_place)
@@ -2195,7 +2220,11 @@ def start_window():
 
 
 start_window()
+
 """
-WORKING ON THE CHAOS MODE AND 
-LEVEL 3 AI (LAST FEATURES BEFORE FINALIZING)
+THE GAME AS A WHOLE IS FINALLY FINISHED
+MIGHT BE FIXING UPCOMING BUGS
+
+MIGHT BE WORKING ON MORE REWARDING FACTORS FOR
+THE LEVEL 3 AI TO MAKE IT MORE POWERFUL (not for now)
 """
