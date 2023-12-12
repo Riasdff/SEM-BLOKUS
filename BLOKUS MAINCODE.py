@@ -3,7 +3,6 @@ from tkinter import *
 from progression import *
 import random
 import math
-import time
 import threading
 from copy import deepcopy
 
@@ -45,7 +44,7 @@ piece_rotations = [[[(0, 0)], [(0, 0)], [(0, 0)], [(0, 0)]],
                    [[(0, 0), [0, 1], [1, 0], [-1, 0]], [(0, 0), [1, 0], [0, 1], [0, -1]], [(0, 0), [0, -1], [1, 0], [-1, 0]], [(0, 0), [-1, 0], [0, 1], [0, -1]]],
                    [[(0, 0), [-1, 0], [0, -1], [1, -1], [0, 1]], [(0, 0), [-1, 0], [-1, -1], [1, 0], [0, 1]], [(0, 0), [-1, 1], [0, -1], [0, 1], [1, 0]], [(0, 0), [1, 0], [-1, 0], [1, 1], [0, -1]]],
                    [[(0, 0), [-1, 0], [-2, 0], [1, 0], [2, 0]], [(0, 0), [0, -1], [0, -2], [0, 1], [0, 2]], [(0, 0), [-1, 0], [-2, 0], [1, 0], [2, 0]], [(0, 0), [0, -1], [0, -2], [0, 1], [0, 2]]],
-                   [[(0, 0), [0, 1], [0, -1], [0, -2], [1, 1]], [(0, 0), [-1, 0], [-2, 0], [1, 0], [1, -1]], [(0, 0), [-1,-1], [0, -1], [0, 1], [0, 2]], [(0, 0), [-1, 1], [-1, 0], [1, 0], [2, 0]]],
+                   [[(0, 0), [0, 1], [0, -1], [0, -2], [1, 1]], [(0, 0), [-1, 0], [-2, 0], [1, 0], [1, -1]], [(0, 0), [-1, -1], [0, -1], [0, 1], [0, 2]], [(0, 0), [-1, 1], [-1, 0], [1, 0], [2, 0]]],
                    [[(0, 0), [0, -1], [0, 1], [1, -1], [1, -2]], [(0, 0), [-1, -1], [-2, -1], [-1, 0], [1, 0]], [(0, 0), [-1, 1], [-1, 2], [0, 1], [0, -1]], [(0, 0), [-1, 0], [1, 0], [1, 1], [2, 1]]],
                    [[(0, 0), [0, 1], [0, -1], [1, -1], [1, 0]], [(0, 0), [1, 0], [0, -1], [-1, -1], [-1, 0]], [(0, 0), [0, -1], [0, 1], [-1, 1], [-1, 0]], [(0, 0), [-1, 0], [1, 0], [0, 1], [1, 1]]],
                    [[(0, 0), [0, 1], [0, -1], [-1, -1], [1, -1]], [(0, 0), [1, 0], [-1, 0], [-1, -1], [-1, 1]], [(0, 0), [-1, 1], [0, -1], [1, 1], [0, 1]], [(0, 0), [-1, 0], [1, -1], [1, 1], [1, 0]]],
@@ -56,30 +55,6 @@ piece_rotations = [[[(0, 0)], [(0, 0)], [(0, 0)], [(0, 0)]],
                    [[(0, 0), [-1, -1], [0, -1], [0, 1], [0, -2]], [(0, 0), [-1, 0], [-2, 0], [1, 0], [-1, 1]], [(0, 0), [1, 1], [0, 1], [0, -1], [0, 2]], [(0, 0), [1, -1], [1, 0], [-1, 0], [2, 0]]],
                    [[(0, 0), [0, -1], [-1, -1], [1, 1], [0, 1]], [(0, 0), [-1, 0], [1, 0], [1, -1], [-1, 1]], [(0, 0), [0, -1], [-1, -1], [1, 1], [0, 1]], [(0, 0), [-1, 0], [1, 0], [1, -1], [-1, 1]]]
                    ]
-
-pieces_dictionary = {"one": [(0, 0)],
-                     "two": [(0, 0), [1, 0]],
-                     "three_i": [(0, 0), (-1, 0), (1, 0)],
-                     "three_l": [(0, 0), (0, -1), (1, 0)],
-                     "four_i": [(0, 0), (-1, 0), (1, 0), (2, 0)],
-                     "four_l": [(0, 0), (0, -1), (0, 1), (1, 1)],
-                     "four_o": [(0, 0), (-1, 0), (0, -1), (-1, -1)],
-                     "four_s": [(0, 0), (0, -1), (1, 1), (1, 0)],
-                     "four_t": [(0, 0), (0, 1), (1, 0), (-1, 0)],
-                     "f_f": [(0, 0), (-1, 0), (0, -1), (1, -1), (0, 1)],
-                     "f_i": [(0, 0), (-1, 0), (-2, 0), (1, 0), (2, 0)],
-                     "f_l": [(0, 0), (0, 1), (0, -1), (0, -2), (1, 1)],
-                     "f_n": [(0, 0), (0, 1), (0, 2), (1, 0), (1, -1)],
-                     "f_p": [(0, 0), (0, 1), (0, -1), (1, -1), (1, 0)],
-                     "f_t": [(0, 0), (0, 1), (0, -1), (-1, -1), (1, -1)],
-                     "f_u": [(0, 0), (-1, 0), (-1, -1), (1, 0), (1, -1)],
-                     "f_v": [(0, 0), (-1, 0), (-2, 0), (0, -1), (0, -2)],
-                     "f_w": [(0, 0), (0, 1), (-1, 1), (1, -1), (1, 0)],
-                     "f_x": [(0, 0), (-1, 0), (0, -1), (1, 0), (0, 1)],
-                     "f_y": [(0, 0), (-1, 0), (0, -1), (0, 1), (0, 2)],
-                     "f_z": [(0, 0), (0, -1), (-1, -1), (1, 1), (0, 1)]
-                     }
-
 
 review_board = [[0 for _ in range(5)] for _ in range(5)]
 gameboard = [[0 for _ in range(20)] for _ in range(20)]
@@ -101,8 +76,6 @@ theme_colors = ["white", "black", "coral4"]
 block_colors = ["blue", "yellow", "red", "green"]
 turn = 1
 score = 0
-
-
 
 moves = []
 corner_coords = []
@@ -160,7 +133,6 @@ def start_window():
         ai_menu.__setitem__("background", theme_colors[2])
         label1.__setitem__("background", theme_colors[2])
         chaos_mode_checkbox.__setitem__("background", theme_colors[2])
-
 
         if selected_color == "white":
             BLOCK_COLOR = "white"
@@ -422,8 +394,6 @@ def start_window():
                           (1, -2), (1, -1), (1, 0), (1, 1), (1, 2),
                           (2, -1), (2, 0), (2, 1)]
 
-            control_directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-
             for piece in range(21):
                 if turn == 1:
                     if piece not in piece_numbers_player_b:
@@ -516,11 +486,9 @@ def start_window():
                             col_i = col + x
                             board[row_i][col_i] = 0
 
-                    score = 0
                     # print("INVALID FIRST MOVE! TRY AGAIN!")
                     return None
-                else:
-                    placeable = True
+
             if turn == 2:
                 if board[0][0] == -2:
                     if ai_mirrored is True:
@@ -534,11 +502,10 @@ def start_window():
                             row_i = row + y
                             col_i = col + x
                             board[row_i][col_i] = 0
-                    score = 0
+
                     # print("INVALID FIRST MOVE! TRY AGAIN!")
                     return None
-                else:
-                    placeable = True
+
             if turn == 3:
                 if board[0][19] == -3:
                     if ai_mirrored is True:
@@ -552,11 +519,10 @@ def start_window():
                             row_i = row + y
                             col_i = col + x
                             board[row_i][col_i] = 0
-                    score = 0
+
                     # print("INVALID FIRST MOVE! TRY AGAIN!")
                     return None
-                else:
-                    placeable = True
+
             if turn == 4:
                 if board[19][19] == -4:
                     if ai_mirrored is True:
@@ -570,7 +536,7 @@ def start_window():
                             row_i = row + y
                             col_i = col + x
                             board[row_i][col_i] = 0
-                    score = 0
+
                     # print("INVALID FIRST MOVE! TRY AGAIN!")
                     return None
 
@@ -801,7 +767,6 @@ def start_window():
 
                 col = ai_x
                 row = ai_y
-                placeable = False
                 score = 0
 
                 directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
@@ -1053,7 +1018,7 @@ def start_window():
                 score_b += points
             score = 0
 
-        def reopen_start(event=None):
+        def reopen_start():
             timer.cancel()
             game.destroy()
             root.destroy()
@@ -1094,7 +1059,7 @@ def start_window():
                     board.create_line(column * piece_size * 5, sqsize * 2 / 3, column * piece_size * 5, sqsize, fill=outline, width=1)
 
             # checks for a valid corner
-            def check_surrounding_corners(valid_corners, x, y):
+            def check_surrounding_corners(x, y):
                 # Define the possible directions for adjacent cells
                 directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
@@ -1226,7 +1191,7 @@ def start_window():
                             gameboard[row][column] = 0
 
                     if gameboard[row][column] == turn:
-                        check_surrounding_corners(valid_corners, column, row)
+                        check_surrounding_corners(column, row)
 
             # defaults every corner to the color index for its determined piece
             if gameboard[19][0] == 0:
@@ -1249,11 +1214,11 @@ def start_window():
                 for column in range(20):
                     if gameboard[row][column] == -turn:
                         board.create_oval(column * sqsize / 30, row * sqsize / 30, column * sqsize / 30 + sqsize / 30,
-                                               row * sqsize / 30 + sqsize / 30, fill=color[turn + 4], tags="board", outline=outline)
+                                          row * sqsize / 30 + sqsize / 30, fill=color[turn + 4], tags="board", outline=outline)
                         valid_corners += 1
             # P - Keypress returns gameboard as array in console
 
-            def print_gameboard(event=None):
+            def print_gameboard():
                 for r in gameboard:
                     print(r, end=" ")
                     print()
@@ -1541,7 +1506,7 @@ def start_window():
             game.bind("<r>", rotate_ccw)
 
         # every resize of the window calls this function
-        def config(event=None):
+        def config():
             board.delete("all")
             draw()
 
@@ -1789,7 +1754,7 @@ def start_window():
                 return None
 
         # CANVAS BUTTON - left mouse button click skips turn manually
-        def skip_turn(event=None):
+        def skip_turn():
             global turn, selected_piece, mirrored, rotate_counter
             game_progression.append([-1, f"TURN SKIPPED BY: <{color[turn]}> "])
             turn += 1
@@ -1822,7 +1787,7 @@ def start_window():
                     elif ai_clicked.get() == "AI LEVEL 3":
                         ai_turn_lv3()
 
-        def take_back(event=None):
+        def take_back():
             global turn, selected_piece, rotate_counter, mirrored, score
             if not game_progression:
                 return None
@@ -1865,7 +1830,7 @@ def start_window():
                             try:
                                 gameboard[row_i][col_i] = 0
                             except IndexError:
-                                 print("NOT IN GAMEBOARD")
+                                print("NOT IN GAMEBOARD")
 
                             if turn == 4:
                                 if row_i == 19 and col_i == 19:
@@ -1913,10 +1878,10 @@ def start_window():
                     draw()
 
         # CANVAS BUTTON - left mouse button click opens rules menu with all the important information to play
-        def rules_menu(event):
-            global rules, bg_theme
+        def rules_menu():
+            global bg_theme
 
-            def rules_next(event):
+            def rules_next():
                 r_canvas.delete("all")
                 r_canvas.create_text(window_sqsize * 9 / window_grid, window_sqsize * 1 / window_grid, text="CORE RULES",
                                      font=(font, 30))
@@ -1951,7 +1916,7 @@ def start_window():
                                           "-- The piece can touch differently colored pieces freely",
                                      font=(font, 12), width=500, anchor="w")
 
-            def rules_previous(event):
+            def rules_previous():
                 r_canvas.delete("all")
                 r_canvas.create_text(window_sqsize * 9 / window_grid, window_sqsize * 1 / window_grid, text="CASUAL RULES",
                                      font=(font, 30))
@@ -1964,8 +1929,8 @@ def start_window():
                 r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 6 / window_grid,
                                      text="2-Players: Every player controls two colors.\n"
                                           "One player controls blue and red while\n the other controls yellow and green.\n"
-                                          "Both colors of each player count towards their total points. The playing order remains the same."
-                                     , font=(font, 12), width=500, anchor="w")
+                                          "Both colors of each player count towards their total points. The playing order remains the same.",
+                                     font=(font, 12), width=500, anchor="w")
                 r_canvas.create_rectangle(window_sqsize * 14 / window_grid, window_sqsize * 16 / window_grid,
                                           window_sqsize * 17 / window_grid, window_sqsize * 17 / window_grid,
                                           fill="gray75", activefill="lightgreen", tags="next")
@@ -1992,7 +1957,7 @@ def start_window():
                                      text="[P] - Print the gameboard as an array via press.",
                                      font=(font, 12), width=500, anchor="w")
 
-            def close_menu(event=None):
+            def close_menu():
                 rules.withdraw()
 
             rules = tk.Tk()
@@ -2040,7 +2005,7 @@ def start_window():
             rules.mainloop()
 
         # CANVAS BUTTON - left mouse button click ends the application
-        def quit(event):
+        def quit():
             global gameboard, game_progression, turn, selected_piece, mirrored, score_y, score_r, score_g, score_b,\
                     piece_numbers_ai_y, piece_numbers_ai_g, review_board, bg_theme, BLOCK_COLOR, font, fontcolor, \
                     outline, color, themes, theme_colors, block_colors, score, moves, corner_coords, possible_moves, \
