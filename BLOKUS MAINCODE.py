@@ -89,10 +89,12 @@ score_g = 0
 scores = [score_b, score_y, score_r, score_g]
 selected_piece = None
 mirrored = False
-
+menu_state = False
 
 def start_window():
-    global BLUE, YELLOW, RED, GREEN
+    global BLUE, YELLOW, RED, GREEN, menu_state
+
+    menu_state = True
 
     def set_blue(i):
         global BLUE
@@ -351,6 +353,9 @@ def start_window():
     chaos_mode_checkbox.place(x=200, y=545)
 
     def main():
+        global menu_state
+        menu_state = False
+
         root.withdraw()
         game = tk.Tk()
         game.geometry("900x900")
@@ -1755,37 +1760,40 @@ def start_window():
 
         # CANVAS BUTTON - left mouse button click skips turn manually
         def skip_turn(event=None):
-            global turn, selected_piece, mirrored, rotate_counter
-            game_progression.append([-1, f"TURN SKIPPED BY: <{color[turn]}> "])
-            turn += 1
-            if turn > 4:
-                turn = 1
-            board.delete("all")
-            selected_piece = None
-            mirrored = False
-            rotate_counter = 0
-            # print(game_progression)
-            draw()
-            chaos_reset()
-            if player_clicked.get() == "SINGLEPLAYER":
-                if turn == 2 or turn == 4:
-                    if ai_clicked.get() == "AI LEVEL 1":
-                        move = random.choice([0, 1, 2])
-                        if move == 0:
-                            if not get_moves(gameboard):
-                                skip_turn()
+            global turn, selected_piece, mirrored, rotate_counter, menu_active
+            if menu_state is True:
+                return
+            else:
+                game_progression.append([-1, f"TURN SKIPPED BY: <{color[turn]}> "])
+                turn += 1
+                if turn > 4:
+                    turn = 1
+                board.delete("all")
+                selected_piece = None
+                mirrored = False
+                rotate_counter = 0
+                # print(game_progression)
+                draw()
+                chaos_reset()
+                if player_clicked.get() == "SINGLEPLAYER":
+                    if turn == 2 or turn == 4:
+                        if ai_clicked.get() == "AI LEVEL 1":
+                            move = random.choice([0, 1, 2])
+                            if move == 0:
+                                if not get_moves(gameboard):
+                                    skip_turn()
+                                else:
+                                    random_move = random.choice(get_moves(gameboard))
+                                    ai_place(gameboard, random_move[0], random_move[1], random_move[2], random_move[3],
+                                             random_move[4])
+                            elif move == 1:
+                                ai_turn_lv2()
                             else:
-                                random_move = random.choice(get_moves(gameboard))
-                                ai_place(gameboard, random_move[0], random_move[1], random_move[2], random_move[3],
-                                         random_move[4])
-                        elif move == 1:
+                                ai_turn_lv3()
+                        elif ai_clicked.get() == "AI LEVEL 2":
                             ai_turn_lv2()
-                        else:
+                        elif ai_clicked.get() == "AI LEVEL 3":
                             ai_turn_lv3()
-                    elif ai_clicked.get() == "AI LEVEL 2":
-                        ai_turn_lv2()
-                    elif ai_clicked.get() == "AI LEVEL 3":
-                        ai_turn_lv3()
 
         def take_back(event=None):
             global turn, selected_piece, rotate_counter, mirrored, score
