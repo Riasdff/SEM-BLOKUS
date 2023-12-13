@@ -128,7 +128,7 @@ def start_window():
 
     def change_canvas_color(selected_color):
         global outline, BLOCK_COLOR, bg_theme, fontcolor
-        canvas_fg.config(bg=selected_color)
+        canvas_fg.__setitem__("background", selected_color)
         player_menu.__setitem__("background", theme_colors[2])
         ai_menu.__setitem__("background", theme_colors[2])
         label1.__setitem__("background", theme_colors[2])
@@ -1018,7 +1018,7 @@ def start_window():
                 score_b += points
             score = 0
 
-        def reopen_start():
+        def reopen_start(event=None):
             timer.cancel()
             game.destroy()
             root.destroy()
@@ -1506,13 +1506,13 @@ def start_window():
             game.bind("<r>", rotate_ccw)
 
         # every resize of the window calls this function
-        def config():
+        def config(event=None):
             board.delete("all")
             draw()
 
         # Click - left mouse button press checks if a piece has been selected,
         # if it placeable and if so draw it on the gameboard
-        def on_place(event=None):
+        def on_place(event):
             global gameboard, turn, selected_piece, rotate_counter, mirrored, color, score
             if selected_piece is not None:
                 sqsize = min(int(game.winfo_width()), int(game.winfo_height()))
@@ -1754,7 +1754,7 @@ def start_window():
                 return None
 
         # CANVAS BUTTON - left mouse button click skips turn manually
-        def skip_turn():
+        def skip_turn(event=None):
             global turn, selected_piece, mirrored, rotate_counter
             game_progression.append([-1, f"TURN SKIPPED BY: <{color[turn]}> "])
             turn += 1
@@ -1787,7 +1787,7 @@ def start_window():
                     elif ai_clicked.get() == "AI LEVEL 3":
                         ai_turn_lv3()
 
-        def take_back():
+        def take_back(event=None):
             global turn, selected_piece, rotate_counter, mirrored, score
             if not game_progression:
                 return None
@@ -1878,10 +1878,10 @@ def start_window():
                     draw()
 
         # CANVAS BUTTON - left mouse button click opens rules menu with all the important information to play
-        def rules_menu():
+        def rules_menu(event=None):
             global bg_theme
 
-            def rules_next():
+            def rules_next(event=None):
                 r_canvas.delete("all")
                 r_canvas.create_text(window_sqsize * 9 / window_grid, window_sqsize * 1 / window_grid, text="CORE RULES",
                                      font=(font, 30))
@@ -1916,7 +1916,7 @@ def start_window():
                                           "-- The piece can touch differently colored pieces freely",
                                      font=(font, 12), width=500, anchor="w")
 
-            def rules_previous():
+            def rules_previous(event=None):
                 r_canvas.delete("all")
                 r_canvas.create_text(window_sqsize * 9 / window_grid, window_sqsize * 1 / window_grid, text="CASUAL RULES",
                                      font=(font, 30))
@@ -1957,7 +1957,7 @@ def start_window():
                                      text="[P] - Print the gameboard as an array via press.",
                                      font=(font, 12), width=500, anchor="w")
 
-            def close_menu():
+            def close_menu(event=None):
                 rules.withdraw()
 
             rules = tk.Tk()
@@ -2005,7 +2005,7 @@ def start_window():
             rules.mainloop()
 
         # CANVAS BUTTON - left mouse button click ends the application
-        def quit():
+        def quit(event=None):
             global gameboard, game_progression, turn, selected_piece, mirrored, score_y, score_r, score_g, score_b,\
                     piece_numbers_ai_y, piece_numbers_ai_g, review_board, bg_theme, BLOCK_COLOR, font, fontcolor, \
                     outline, color, themes, theme_colors, block_colors, score, moves, corner_coords, possible_moves, \
