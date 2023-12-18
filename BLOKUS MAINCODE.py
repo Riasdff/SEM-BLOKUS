@@ -1232,7 +1232,7 @@ def start_window():
                         valid_corners += 1
             # P - Keypress returns gameboard as array in console
 
-            def print_gameboard():
+            def print_gameboard(event=None):
                 for r in gameboard:
                     print(r, end=" ")
                     print()
