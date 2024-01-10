@@ -272,6 +272,36 @@ def start_window():
         else:
             return
 
+    def start_new_game():
+        global game_progression, turn, score, moves, corner_coords, possible_moves, rotate_counter, scores, \
+            selected_piece, score_b, score_y, score_r, score_g, mirrored, gameboard, piece_numbers_ai_y, \
+            piece_numbers_player_r, piece_numbers_player_b, piece_numbers_ai_g, review_board
+
+        piece_numbers_player_b = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+        piece_numbers_player_r = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+        piece_numbers_ai_y = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+        piece_numbers_ai_g = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+
+        review_board = [[0 for _ in range(5)] for _ in range(5)]
+        gameboard = [[0 for _ in range(20)] for _ in range(20)]
+        game_progression = []
+        turn = 1
+        score = 0
+
+        moves = []
+        corner_coords = []
+        possible_moves = []
+
+        rotate_counter = 0
+        score_b = 0
+        score_y = 0
+        score_r = 0
+        score_g = 0
+        scores = [score_b, score_y, score_r, score_g]
+        selected_piece = None
+        mirrored = False
+        main()
+
     root = tk.Tk()
     root.title("BLOKUS GAME")
     root.geometry("750x750")
@@ -1820,7 +1850,7 @@ def start_window():
 
         # CANVAS BUTTON - left mouse button click skips turn manually
         def skip_turn(event=None):
-            global turn, selected_piece, mirrored, rotate_counter, menu_active
+            global turn, selected_piece, mirrored, rotate_counter
             if menu_state is True:
                 return
             else:
@@ -2270,7 +2300,7 @@ def start_window():
         game.mainloop()
 
     start_button = tk.Button(canvas_fg, text="START GAME", bg=bg_theme, fg=fontcolor, font=(font, 30),
-                             command=main, width=12, state=DISABLED, activebackground=color[6])
+                             command=start_new_game, width=12, state=DISABLED, activebackground=color[6])
     start_button.place(x=20, y=625)
 
     continue_button = tk.Button(canvas_fg, text="CONTINUE", bg=bg_theme, fg=fontcolor, font=(font, 30),
