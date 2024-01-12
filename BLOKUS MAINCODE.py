@@ -1063,7 +1063,7 @@ def start_window():
             random_move = random.choice([bm1, bm2, bm3, bm4, bm5, bm6, bm7, bm8, bm9, bm10])
             while not random_move:
                 random_move = random.choice([bm1, bm2, bm3, bm4, bm5, bm6, bm7, bm8, bm9, bm10])
-            print([bm1, bm2, bm3, bm4, bm5, bm6, bm7, bm8, bm9, bm10])
+            # print([bm1, bm2, bm3, bm4, bm5, bm6, bm7, bm8, bm9, bm10])
             ai_place(gameboard, random_move[0], random_move[1], random_move[2], random_move[3], random_move[4])
 
         def reopen_start(event=None):
@@ -1262,7 +1262,8 @@ def start_window():
                         valid_corners += 1
             # P - Keypress returns gameboard as array in console
 
-            def print_gameboard(event=None):
+            def print_gameboard(event):
+                print(event)
                 for r in gameboard:
                     print(r, end=" ")
                     print()
