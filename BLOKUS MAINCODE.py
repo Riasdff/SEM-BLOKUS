@@ -1061,10 +1061,10 @@ def start_window():
                     continue
 
             random_move = random.choice([bm1, bm2, bm3, bm4, bm5, bm6, bm7, bm8, bm9, bm10])
+            while not random_move:
+                random_move = random.choice([bm1, bm2, bm3, bm4, bm5, bm6, bm7, bm8, bm9, bm10])
             print([bm1, bm2, bm3, bm4, bm5, bm6, bm7, bm8, bm9, bm10])
             ai_place(gameboard, random_move[0], random_move[1], random_move[2], random_move[3], random_move[4])
-
-
 
         def reopen_start(event=None):
             timer.cancel()
@@ -1270,7 +1270,7 @@ def start_window():
                 print(selected_piece)
                 print(eval_player, eval_ai)
                 print(eval_player - eval_ai)
-                get_moves(gameboard)
+                print(len(get_moves(gameboard)))
                 print(piece_numbers_player_b)
                 print(piece_numbers_ai_y)
                 print(piece_numbers_player_r)
