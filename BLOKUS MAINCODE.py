@@ -2137,6 +2137,7 @@ def start_window():
             end_window = tk.Tk()
             end_window.geometry("400x500")
             end_window.resizable(False, False)
+            end_window.title("ENDSCREEN - GG")
             screen = tk.Canvas(end_window, width=400, height=400, bg=bg_theme)
             screen.pack(fill=BOTH, expand=True)
 
