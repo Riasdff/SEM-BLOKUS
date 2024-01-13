@@ -1983,7 +1983,7 @@ def start_window():
                 r_canvas.delete("all")
                 r_canvas.create_text(window_sqsize * 9 / window_grid, window_sqsize * 1 / window_grid,
                                      text="CORE RULES", font=(font, 30), fill=fontcolor)
-                r_canvas.create_rectangle(window_sqsize * 0.5 / window_grid, window_sqsize * 16 / window_grid,
+                r_canvas.create_rectangle(window_sqsize * 1 / window_grid, window_sqsize * 16 / window_grid,
                                           window_sqsize * 4.5 / window_grid, window_sqsize * 17 / window_grid,
                                           fill="gray75", activefill="lightgreen", tags="previous")
                 r_canvas.create_rectangle(window_sqsize * 14 / window_grid, window_sqsize * 16 / window_grid,
@@ -1991,11 +1991,11 @@ def start_window():
                                           fill="gray75", activefill="lightgreen", tags="close")
                 r_canvas.create_text(window_sqsize * 31 / window_grid / 2, window_sqsize * 35 / window_grid / 2,
                                      text="PAGE 2/2", font=(font, 15), fill=fontcolor)
-                r_canvas.create_text(window_sqsize * 5 / window_grid / 2, window_sqsize * 33 / window_grid / 2,
+                r_canvas.create_text(window_sqsize * 5.5 / window_grid / 2, window_sqsize * 33 / window_grid / 2,
                                      text="PREVIOUS", font=(font, 15), tags="previous",
-                                     activefill="white", fill=fontcolor)
+                                     activefill="lightgreen", fill=fontcolor)
                 r_canvas.create_text(window_sqsize * 31 / window_grid / 2, window_sqsize * 33 / window_grid / 2,
-                                     text="CLOSE", font=(font, 15), tags="close", activefill="white", fill=fontcolor)
+                                     text="CLOSE", font=(font, 15), tags="close", activefill="lightgreen", fill=fontcolor)
                 r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 4.5 / window_grid,
                                      text="Every player starts on 0 points. The"
                                           " play order starts with blue at the bottom"
@@ -2006,20 +2006,19 @@ def start_window():
                                           " to play with. You pick a piece and "
                                           "place it on the board accordingly in order"
                                           " to get points. The points consist of"
-                                          " the number of individual squares the piece"
-                                          " is made of."
-                                          "while all the 2-Player-Rules apply.", font=(font, 12), width=500,
+                                          " the number of individual squares of the placed pieces. "
+                                          "The player with the highest number wins.", font=(font, 12), width=500,
                                      anchor="w", fill=fontcolor)
                 r_canvas.create_text(window_sqsize * 9 / window_grid, window_sqsize * 8 / window_grid,
                                      text="RULES TO PLACE", font=(font, 30), fill=fontcolor)
                 r_canvas.create_text(window_sqsize * 1 / window_grid, window_sqsize * 11.5 / window_grid,
-                                     text="-- [1st MOVE] -- The piece must cover the corner.\n"
+                                     text="-- [1st ROUND] -- The piece must cover the corner.\n"
                                           "(Blue -> Bottom left; Yellow -> Upper left; "
                                           "Red -> Upper right; Green -> Bottom right\n"
                                           "-- The piece must be fully placeable on the board\n"
-                                          "-- The piece must not overwrite another piece at all\n"
+                                          "-- The piece must not overwrite other pieces at all\n"
                                           "-- The piece must touch another piece of "
-                                          "the same color but only on at least one corner\n"
+                                          "the same color but only on at least one corner creating a connection\n"
                                           "-- The piece can touch differently colored pieces freely",
                                      font=(font, 12), width=500, anchor="w", fill=fontcolor)
 
@@ -2067,7 +2066,7 @@ def start_window():
                 r_canvas.create_text(window_sqsize * 31 / window_grid / 2, window_sqsize * 35 / window_grid / 2,
                                      text="PAGE 1/2", font=(font, 15), fill=fontcolor)
                 r_canvas.create_text(window_sqsize * 31 / window_grid / 2, window_sqsize * 33 / window_grid / 2,
-                                     text="NEXT", font=(font, 15), tags="next", activefill="white", fill=fontcolor)
+                                     text="NEXT", font=(font, 15), tags="next", activefill="lightgreen", fill=fontcolor)
 
             def close_menu(event=None):
                 rules.withdraw()
@@ -2120,7 +2119,7 @@ def start_window():
             r_canvas.create_text(window_sqsize * 31 / window_grid / 2, window_sqsize * 35 / window_grid / 2,
                                  text="PAGE 1/2", font=(font, 15), fill=fontcolor)
             r_canvas.create_text(window_sqsize * 31 / window_grid / 2, window_sqsize * 33 / window_grid / 2,
-                                 text="NEXT", font=(font, 15), tags="next", activefill="white", fill=fontcolor)
+                                 text="NEXT", font=(font, 15), tags="next", activefill="lightgreen", fill=fontcolor)
             r_canvas.tag_bind("next", "<Button-1>", rules_next)
             r_canvas.tag_bind("previous", "<Button-1>", rules_previous)
             r_canvas.tag_bind("close", "<Button-1>", close_menu)
